@@ -1,3 +1,4 @@
+import logoPuzzle from './logo-puzzle.png';
 import { useState, useEffect } from 'react';
 import { 
   Phone, 
@@ -124,7 +125,7 @@ const Navbar = () => (
       <div className="flex justify-between items-center h-20">
         <div className="flex items-center gap-3">
           <img
-            src="logo-puzzle.png"
+            src={logoPuzzle}
             alt="Easy Courtage Assurance"
             style={{
               height: '38px',
