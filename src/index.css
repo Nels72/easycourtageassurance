@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 @theme {
   --color-primary: #003f7f;
@@ -7,10 +8,17 @@
   --color-accent-dark: #ea6c0a;
   --color-navy: #1a1a2e;
   --color-soft: #f4f7fc;
+  --font-playfair: "Playfair Display", serif;
+  --font-dmsans: "DM Sans", sans-serif;
 }
 
-/* Défilé partenaires : ~3,5 s par logo pour une lecture confortable (9 logos × 3,5 s ≈ 32 s par cycle) */
-@keyframes partenaires-marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+#modal-apropos *,
+#modal-confidentialite *,
+#modal-maps *,
+#cookie-banner * {
+  font-family: 'DM Sans', sans-serif;
+}
+
+#cookie-banner {
+  transition: transform 0.4s ease, opacity 0.4s ease;
 }
