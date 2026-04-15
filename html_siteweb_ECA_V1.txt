@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Easy Courtage Assurance – Courtier en assurance à Alfortville & Bonneuil-sur-Marne (94)</title>
+  <meta name="description" content="Easy Courtage Assurance, votre courtier indépendant à Alfortville et Bonneuil-sur-Marne. Comparez et souscrivez les meilleures assurances auto, habitation, santé et professionnelle au meilleur prix." />
+  <meta name="keywords" content="assurance auto Alfortville, courtier assurance Val-de-Marne, assurance habitation Bonneuil-sur-Marne, assurance professionnelle 94, mutuelle santé Alfortville" />
+  <meta property="og:title" content="Easy Courtage Assurance – Votre courtier en assurance (94)" />
+  <meta property="og:description" content="Courtier indépendant à Alfortville & Bonneuil-sur-Marne. Assurance auto, habitation, santé, pro." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://easycourtage-assurance.fr" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "InsuranceAgency",
+    "name": "Easy Courtage Assurance",
+    "url": "https://easycourtage-assurance.fr",
+    "telephone": "+33143781431",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "47 rue Victor Hugo",
+      "addressLocality": "Alfortville",
+      "postalCode": "94140",
+      "addressCountry": "FR"
+    },
+    "geo": { "@type": "GeoCoordinates", "latitude": 48.804, "longitude": 2.417 },
+    "openingHours": "Mo-Fr 09:00-18:00"
+  }
+  </script>
+  <script async src="https://tally.so/widgets/embed.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #003f7f;
+      --primary-light: #0059b3;
+      --accent: #f97316;
+      --accent-dark: #ea6c0a;
+      --text: #1a1a2e;
+      --text-muted: #5a6478;
+      --bg: #ffffff;
+      --bg-soft: #f4f7fc;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0,63,127,.08);
+      --shadow-lg: 0 12px 48px rgba(0,63,127,.15);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+
+    .topbar { background: var(--primary); color: #fff; font-size: .82rem; padding: .5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem; }
+    .topbar a { color: #c9deff; transition: color .2s; }
+    .topbar a:hover { color: #fff; }
+
+    nav { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1px solid var(--border); box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+    .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -.5px; }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; list-style: none; gap: .25rem; flex-wrap: wrap; }
+    .nav-links a { padding: .45rem .85rem; border-radius: 8px; font-size: .9rem; font-weight: 500; color: var(--text); transition: background .2s, color .2s; }
+    .nav-links a:hover { background: var(--bg-soft); color: var(--primary); }
+    .nav-cta { background: var(--accent) !important; color: #fff !important; padding: .5rem 1.2rem !important; border-radius: 8px !important; font-weight: 600 !important; }
+    .nav-cta:hover { background: var(--accent-dark) !important; }
+
+    .hero { background: linear-gradient(135deg, var(--primary) 0%, #005cc8 60%, #0072f5 100%); color: #fff; padding: 6rem 2rem 5rem; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .hero-inner { max-width: 800px; margin: 0 auto; position: relative; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: .35rem 1rem; font-size: .82rem; font-weight: 600; letter-spacing: .5px; margin-bottom: 1.5rem; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.25rem; }
+    .hero h1 em { color: #fbd38d; font-style: normal; }
+    .hero p { font-size: 1.15rem; opacity: .9; max-width: 600px; margin: 0 auto 2rem; }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--accent); color: #fff; padding: .85rem 2rem; border-radius: 10px; font-weight: 700; font-size: 1rem; transition: transform .2s, box-shadow .2s; box-shadow: 0 4px 16px rgba(249,115,22,.4); display: inline-block; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,.5); }
+    .btn-outline { background: rgba(255,255,255,.1); border: 2px solid rgba(255,255,255,.5); color: #fff; padding: .85rem 2rem; border-radius: 10px; font-weight: 600; font-size: 1rem; transition: background .2s; display: inline-block; }
+    .btn-outline:hover { background: rgba(255,255,255,.2); }
+
+    .stats { background: #fff; border-bottom: 1px solid var(--border); padding: 2.5rem 2rem; }
+    .stats-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 2rem; text-align: center; }
+    .stat-item strong { display: block; font-size: 2.2rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .stat-item span { font-size: .9rem; color: var(--text-muted); margin-top: .4rem; display: block; }
+
+    section { padding: 5rem 2rem; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-label { font-size: .78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: .75rem; }
+    .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; color: var(--primary); margin-bottom: 1rem; line-height: 1.2; }
+    .section-subtitle { color: var(--text-muted); max-width: 620px; font-size: 1.05rem; margin-bottom: 3rem; }
+
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .service-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: transform .25s, box-shadow .25s, border-color .25s; }
+    .service-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--primary-light); }
+    .service-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; margin-bottom: 1.25rem; }
+    .service-card h3 { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-bottom: .6rem; }
+    .service-card p { font-size: .93rem; color: var(--text-muted); line-height: 1.65; }
+    .service-link { display: inline-flex; align-items: center; gap: .4rem; margin-top: 1.2rem; font-size: .9rem; font-weight: 600; color: var(--primary-light); transition: gap .2s; }
+    .service-link:hover { gap: .7rem; }
+
+    .why-bg { background: var(--bg-soft); }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+    .why-item { text-align: center; padding: 1.5rem; }
+    .why-icon { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1.25rem; box-shadow: 0 8px 24px rgba(0,63,127,.2); }
+    .why-item h3 { font-weight: 700; color: var(--primary); margin-bottom: .5rem; }
+    .why-item p { font-size: .92rem; color: var(--text-muted); }
+
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .testimonial-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; }
+    .stars { color: #f59e0b; font-size: 1.1rem; margin-bottom: .75rem; letter-spacing: 2px; }
+    .testimonial-card blockquote { font-size: .95rem; color: var(--text); font-style: italic; margin-bottom: 1rem; border: none; padding: 0; }
+    .testimonial-author { font-weight: 700; font-size: .9rem; color: var(--primary); }
+    .testimonial-sub { font-size: .8rem; color: var(--text-muted); }
+
+    .partners-list { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; align-items: center; }
+    .partner-pill { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 999px; padding: .65rem 2rem; font-weight: 700; font-size: 1rem; color: var(--primary); transition: border-color .2s, box-shadow .2s; }
+    .partner-pill:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+
+    .agences-bg { background: var(--primary); color: #fff; }
+    .agences-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+    .agence-card { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); border-radius: var(--radius); padding: 2rem; }
+    .agence-card h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem; color: #fff; }
+    .agence-info { display: flex; flex-direction: column; gap: .75rem; }
+    .agence-row { display: flex; align-items: flex-start; gap: .75rem; font-size: .95rem; }
+    .agence-row .ico { font-size: 1.1rem; flex-shrink: 0; margin-top: .1rem; }
+    .agence-row a { color: #c9deff; transition: color .2s; }
+    .agence-row a:hover { color: #fff; }
+    .btn-call { display: inline-block; margin-top: 1.5rem; background: var(--accent); color: #fff; padding: .7rem 1.5rem; border-radius: 8px; font-weight: 700; font-size: .95rem; transition: background .2s; }
+    .btn-call:hover { background: var(--accent-dark); }
+
+    .devis-bg { background: var(--bg-soft); }
+    .devis-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: start; }
+    .devis-intro .checklist { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+    .devis-intro .check-item { display: flex; align-items: center; gap: .85rem; font-size: .97rem; }
+    .check-icon { width: 32px; height: 32px; background: #dbeafe; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .tally-wrapper { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow-lg); overflow: hidden; border: 1px solid var(--border); }
+    .tally-wrapper iframe { width: 100%; min-height: 600px; border: none; display: block; }
+
+    footer { background: #0a1628; color: #8fa3c0; padding: 3.5rem 2rem 1.5rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .footer-brand .logo { color: #fff; font-size: 1.4rem; margin-bottom: .75rem; }
+    .footer-brand p { font-size: .9rem; line-height: 1.75; }
+    .footer-col h4 { color: #fff; font-size: .95rem; font-weight: 700; margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    .footer-col a { font-size: .88rem; color: #8fa3c0; transition: color .2s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { padding-top: 1.5rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: .82rem; }
+    .footer-bottom a { color: #8fa3c0; }
+
+    .phone-float { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200; background: var(--accent); color: #fff; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 6px 24px rgba(249,115,22,.5); transition: transform .2s; }
+    .phone-float:hover { transform: scale(1.1); }
+
+    @media(max-width: 960px) { .devis-layout { grid-template-columns: 1fr; gap: 2.5rem; } }
+    @media(max-width: 900px) { .nav-links { display: none; } }
+    @media(max-width: 768px) { .footer-top { grid-template-columns: 1fr; gap: 2rem; } }
+    @media(max-width: 600px) { .hero { padding: 4rem 1.25rem 3.5rem; } section { padding: 3.5rem 1.25rem; } .topbar { justify-content: center; text-align: center; } }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>📍 2 agences Val-de-Marne (94) — Alfortville & Bonneuil-sur-Marne</span>
+  <span>
+    <a href="tel:0143781431">☎ 01 43 78 14 31</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+    <a href="tel:0143394848">☎ 01 43 39 48 48</a>
+  </span>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">easy<span>COURTAGE</span></div>
+    <ul class="nav-links">
+      <li><a href="#services">Nos assurances</a></li>
+      <li><a href="#pourquoi">Pourquoi nous</a></li>
+      <li><a href="#avis">Avis clients</a></li>
+      <li><a href="#agences">Nos agences</a></li>
+      <li><a href="#devis" class="nav-cta">Demander un devis</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🏆 Courtier indépendant — Val-de-Marne (94)</div>
+    <h1>L'assurance au <em>meilleur prix</em>,<br>près de chez vous.</h1>
+    <p>Easy Courtage Assurance compare pour vous les offres des plus grandes compagnies et vous guide vers le contrat idéal — auto, habitation, santé ou pro.</p>
+    <div class="hero-btns">
+      <a href="#devis" class="btn-primary">Obtenir un devis gratuit →</a>
+      <a href="tel:0143781431" class="btn-outline">📞 Nous appeler</a>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat-item"><strong>+15</strong><span>ans d'expérience</span></div>
+    <div class="stat-item"><strong>2</strong><span>agences de proximité</span></div>
+    <div class="stat-item"><strong>5+</strong><span>compagnies partenaires</span></div>
+    <div class="stat-item"><strong>100%</strong><span>conseils personnalisés</span></div>
+  </div>
+</div>
+
+<section id="services">
+  <div class="section-inner">
+    <div class="section-label">Ce que nous proposons</div>
+    <h2 class="section-title">Toutes vos assurances<br>en un seul endroit</h2>
+    <p class="section-subtitle">Quel que soit votre profil, nous trouvons la couverture adaptée à vos besoins et à votre budget.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon" style="background:#dbeafe;">🚗</div>
+        <h3>Assurance Auto</h3>
+        <p>Responsabilité civile, tous risques ou tiers étendu — comparez les meilleures offres pour votre véhicule. Même malussé ou résilié.</p>
+        <a href="#devis" class="service-link">Obtenir un devis →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon" style="background:#fef3c7;">🏍️</div>
+        <h3>Deux-Roues</h3>
+        <p>Moto, scooter, cyclo ou quad — nous trouvons une assurance adaptée à votre véhicule et à votre budget, en toute simplicité.</p>
+        <a href="#devis" class="service-link">Obtenir un devis →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon" style="background:#dcfce7;">💼</div>
+        <h3>Assurance Professionnelle</h3>
+        <p>RC Pro, multirisque professionnelle, protection juridique — sécurisez votre activité et protégez vos biens et équipes.</p>
+        <a href="#devis" class="service-link">Obtenir un devis →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon" style="background:#fce7f3;">🏥</div>
+        <h3>Famille & Santé</h3>
+        <p>Mutuelle individuelle ou familiale, prévoyance — maintenez votre niveau de vie face aux imprévus de la santé.</p>
+        <a href="#devis" class="service-link">Obtenir un devis →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon" style="background:#ede9fe;">🏠</div>
+        <h3>Habitation</h3>
+        <p>Assurance multirisque habitation pour propriétaires et locataires, avec des garanties étendues à des tarifs très compétitifs.</p>
+        <a href="#devis" class="service-link">Obtenir un devis →</a>
+      </div>
+      <div class="service-card" style="background:linear-gradient(135deg,var(--primary),var(--primary-light));border-color:transparent;">
+        <div class="service-icon" style="background:rgba(255,255,255,.15);">🤝</div>
+        <h3 style="color:#fff;">Vous ne trouvez pas ?</h3>
+        <p style="color:rgba(255,255,255,.85);">Contactez-nous ! Nos conseillers étudient votre situation et trouvent la solution sur mesure.</p>
+        <a href="#devis" class="service-link" style="color:#fbd38d;">Parler à un conseiller →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pourquoi" class="why-bg">
+  <div class="section-inner">
+    <div style="text-align:center; margin-bottom:3rem;">
+      <div class="section-label">Nos atouts</div>
+      <h2 class="section-title" style="text-align:center;">Pourquoi choisir Easy Courtage ?</h2>
+      <p class="section-subtitle" style="margin:0 auto; text-align:center;">Indépendants, nous travaillons pour vous — pas pour les compagnies d'assurances.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-icon">⚡</div>
+        <h3>Réponse rapide</h3>
+        <p>Devis sous 24h et prise en charge immédiate dès la souscription.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">🔍</div>
+        <h3>Comparaison objective</h3>
+        <p>Nous comparons plusieurs compagnies pour vous trouver le meilleur rapport qualité-prix.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">📞</div>
+        <h3>Suivi personnalisé</h3>
+        <p>Un conseiller dédié vous accompagne à chaque étape, de la souscription au sinistre.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">📍</div>
+        <h3>Agences de proximité</h3>
+        <p>Deux agences dans le Val-de-Marne pour vous recevoir et vous conseiller en face à face.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="avis">
+  <div class="section-inner">
+    <div class="section-label">Ce que disent nos clients</div>
+    <h2 class="section-title">Ils nous font confiance</h2>
+    <p class="section-subtitle">Des centaines de clients nous recommandent dans le Val-de-Marne.</p>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Très bon accueil, conseiller à l'écoute. J'ai économisé plus de 200€ par an sur mon assurance auto grâce à Easy Courtage."</blockquote>
+        <div class="testimonial-author">Mohammed A.</div>
+        <div class="testimonial-sub">Client depuis 2021 — Alfortville</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Réponse rapide, explications claires. Ils ont trouvé une solution malgré mon malus. Je recommande vivement !"</blockquote>
+        <div class="testimonial-author">Sandrine M.</div>
+        <div class="testimonial-sub">Cliente depuis 2022 — Créteil</div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>"Superbe agence de proximité. J'ai souscrit mon assurance pro en moins d'une semaine. Équipe très professionnelle."</blockquote>
+        <div class="testimonial-author">Karim D.</div>
+        <div class="testimonial-sub">Client depuis 2020 — Bonneuil-sur-Marne</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:2.5rem 2rem; background:#fff; border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <p style="text-align:center; font-size:.78rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); margin-bottom:1.5rem;">Nos compagnies partenaires</p>
+    <div class="partners-list">
+      <div class="partner-pill">Thelem</div>
+      <div class="partner-pill">Allianz</div>
+      <div class="partner-pill">AXA</div>
+      <div class="partner-pill">Generali</div>
+      <div class="partner-pill">CoveaRisk</div>
+    </div>
+  </div>
+</section>
+
+<section id="agences" class="agences-bg">
+  <div class="section-inner">
+    <div style="text-align:center; margin-bottom:3rem;">
+      <div class="section-label" style="color:#fbd38d;">Nos agences</div>
+      <h2 class="section-title" style="color:#fff;">Venez nous rendre visite</h2>
+      <p style="color:rgba(255,255,255,.75); max-width:520px; margin:0 auto;">Deux agences à votre service dans le Val-de-Marne, du lundi au vendredi.</p>
+    </div>
+    <div class="agences-grid">
+      <div class="agence-card">
+        <h3>🏢 Agence Alfortville</h3>
+        <div class="agence-info">
+          <div class="agence-row"><span class="ico">📍</span><span>47 rue Victor Hugo, 94140 Alfortville</span></div>
+          <div class="agence-row"><span class="ico">📞</span><a href="tel:0143781431">01 43 78 14 31</a></div>
+          <div class="agence-row"><span class="ico">✉️</span><a href="mailto:sg@easycourtage.fr">sg@easycourtage.fr</a></div>
+          <div class="agence-row"><span class="ico">🕐</span><span>Lun–Ven : 9h–18h</span></div>
+        </div>
+        <a href="tel:0143781431" class="btn-call">📞 Appeler cette agence</a>
+      </div>
+      <div class="agence-card">
+        <h3>🏢 Agence Bonneuil-sur-Marne</h3>
+        <div class="agence-info">
+          <div class="agence-row"><span class="ico">📍</span><span>2 Rue Désiré Dautier, 94380 Bonneuil-sur-Marne</span></div>
+          <div class="agence-row"><span class="ico">📞</span><a href="tel:0143394848">01 43 39 48 48</a></div>
+          <div class="agence-row"><span class="ico">✉️</span><a href="mailto:ns@easycourtage.fr">ns@easycourtage.fr</a></div>
+          <div class="agence-row"><span class="ico">🕐</span><span>Lun–Ven : 9h–18h</span></div>
+        </div>
+        <a href="tel:0143394848" class="btn-call">📞 Appeler cette agence</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULAIRE TALLY -->
+<section id="devis" class="devis-bg">
+  <div class="section-inner">
+    <div class="devis-layout">
+      <div class="devis-intro">
+        <div class="section-label">Devis gratuit</div>
+        <h2 class="section-title">Obtenez votre devis<br>personnalisé</h2>
+        <p style="color:var(--text-muted); font-size:.97rem;">Exposez-nous votre situation en quelques minutes. Un expert analyse votre dossier et revient vers vous avec une solution optimisée.</p>
+        <div class="checklist">
+          <div class="check-item"><div class="check-icon">✅</div><span>100% gratuit et sans engagement</span></div>
+          <div class="check-item"><div class="check-icon">⚡</div><span>Réponse sous 24h par un expert</span></div>
+          <div class="check-item"><div class="check-icon">🔒</div><span>Données traitées de façon confidentielle</span></div>
+          <div class="check-item"><div class="check-icon">🤝</div><span>Conseil impartial — nous travaillons pour vous</span></div>
+        </div>
+        <div style="margin-top:2.5rem; padding:1.5rem; background:#fff; border-radius:var(--radius); border:1px solid var(--border);">
+          <p style="font-size:.88rem; color:var(--text-muted); margin-bottom:.75rem;">Vous préférez nous appeler directement ?</p>
+          <a href="tel:0143781431" style="display:flex; align-items:center; gap:.6rem; font-weight:700; color:var(--primary); font-size:1rem;">📞 Alfortville : 01 43 78 14 31</a>
+          <a href="tel:0143394848" style="display:flex; align-items:center; gap:.6rem; font-weight:700; color:var(--primary); font-size:1rem; margin-top:.5rem;">📞 Bonneuil : 01 43 39 48 48</a>
+        </div>
+      </div>
+      <div class="tally-wrapper">
+        <iframe
+          src="https://tally.so/embed/44vJYr?alignLeft=1&hideTitle=1&transparentBackground=1"
+          loading="lazy"
+          width="100%"
+          height="600"
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+          title="Sollicitation Devis Assurance"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo">easy<span>COURTAGE</span></div>
+        <p>Courtier en assurance indépendant, Easy Courtage Assurance vous accompagne avec impartialité pour trouver le contrat le mieux adapté à vos besoins dans le Val-de-Marne (94).</p>
+      </div>
+      <div class="footer-col">
+        <h4>Nos assurances</h4>
+        <ul>
+          <li><a href="#">Assurance auto</a></li>
+          <li><a href="#">Deux-roues</a></li>
+          <li><a href="#">Assurance pro</a></li>
+          <li><a href="#">Famille & santé</a></li>
+          <li><a href="#">Habitation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Informations</h4>
+        <ul>
+          <li><a href="#">À propos</a></li>
+          <li><a href="#">Galerie photo</a></li>
+          <li><a href="#devis">Demander un devis</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Easy Courtage Assurance — Tous droits réservés</span>
+      <span>47 rue Victor Hugo, 94140 Alfortville | <a href="tel:0143781431">01 43 78 14 31</a></span>
+    </div>
+  </div>
+</footer>
+
+<a href="tel:0143781431" class="phone-float" title="Appeler Easy Courtage" aria-label="Nous appeler">📞</a>
+
+</body>
+</html>
