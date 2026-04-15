@@ -1,4 +1,3 @@
-import logoPuzzle from './logo-puzzle.png';
 import { useState, useEffect } from 'react';
 import { 
   Phone, 
@@ -9,6 +8,7 @@ import {
   Home, 
   HeartPulse, 
   Briefcase, 
+  ChevronLeft,
   ChevronRight, 
   Star, 
   CheckCircle2,
@@ -16,8 +16,13 @@ import {
   Search,
   Puzzle,
   X,
+  Zap,
+  ShieldAlert,
   ShieldCheck,
-  KeyRound
+  KeyRound,
+  Gauge,
+  Lock,
+  PhoneCall
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -127,7 +132,7 @@ const Navbar = () => (
       <div className="flex justify-between items-center h-20">
         <div className="flex items-center gap-3">
           <img
-            src={logoPuzzle}
+            src={`${import.meta.env.BASE_URL}logo.jpg`}
             alt="Easy Courtage Assurance"
             style={{
               height: '38px',
@@ -138,9 +143,9 @@ const Navbar = () => (
               marginRight: '0.5rem',
             }}
           />
-          <span className="text-xl font-extrabold tracking-tight flex flex-col sm:flex-row sm:items-baseline sm:gap-1">
-            <span className="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent italic text-2xl">Easy</span>
-            <span className="text-primary text-lg">Courtage Assurance</span>
+          <span className="text-xl tracking-tight flex flex-col">
+            <span className="text-gray-400 italic text-2xl font-light leading-none">Easy</span>
+            <span className="text-primary text-lg font-extrabold">Courtage Assurance</span>
           </span>
         </div>
         <div className="hidden md:flex items-center space-x-8">
@@ -175,7 +180,7 @@ const Hero = () => (
         >
           <div className="flex justify-center mb-8">
             <img 
-              src="/logo.png" 
+              src={`${import.meta.env.BASE_URL}logo.jpg`} 
               alt="Easy Courtage Assurance Logo" 
               className="h-20 w-auto object-contain"
               onError={(e) => {
@@ -225,6 +230,228 @@ const Stats = () => (
     </div>
   </div>
 );
+
+const CyberCampaign = ({ onOpenDetails }: { onOpenDetails: () => void }) => (
+  <section className="py-24 bg-gradient-to-br from-[#001a33] to-[#003f7f] text-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="max-w-5xl mx-auto rounded-3xl border border-white/20 bg-white/5 backdrop-blur-sm p-8 md:p-10"
+      >
+        <div className="text-center max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 bg-orange-500/10 px-3 py-1 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider"
+          >
+            <Zap className="w-4 h-4 text-orange-500" />
+            <span className="text-orange-500">C&apos;est d&apos;actualité</span>
+          </motion.div>
+          <h2 className="mt-4 text-3xl font-bold text-white mb-4 leading-tight">
+            Global Cyber Secure : Protégez votre entreprise et vos données
+          </h2>
+          <p className="text-lg text-white/70 max-w-2xl mx-auto">
+            Une réponse globale combinant Prévention, Assurance et Assistance 24/7
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-6 md:grid-cols-3">
+          {[
+            {
+              icon: ShieldCheck,
+              title: 'Prévention',
+              description:
+                'Évaluez votre maturité avec le Security Rating (Board of Cyber) et formez vos équipes avec la plateforme ludique Kamaé.',
+            },
+            {
+              icon: Lock,
+              title: 'Assurance',
+              description:
+                "Couverture de vos pertes d'exploitation, des frais de reconstitution de données et du vol de trésorerie (cyber-fraude).",
+            },
+            {
+              icon: PhoneCall,
+              title: 'Assistance',
+              description:
+                'Accès immédiat 24h/24 et 7j/7 à des experts : informatique, juridique, communication de crise et soutien psychologique.',
+            },
+          ].map((pillar, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ y: -8 }}
+              className="rounded-2xl border border-white/20 bg-white/10 p-6 shadow-sm hover:shadow-xl transition-all cursor-pointer"
+            >
+              <pillar.icon className="w-8 h-8 text-accent mb-4 mx-auto md:mx-0" />
+              <h3 className="text-xl font-bold mb-3">{pillar.title}</h3>
+              <p className="text-sm leading-relaxed text-white/80">{pillar.description}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="mt-10 flex flex-col items-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 w-full sm:w-auto">
+            <a
+              href="#contact"
+              className="inline-flex items-center justify-center bg-accent hover:bg-accent-dark text-white px-7 py-3 rounded-xl font-bold transition-all"
+            >
+              Demander une étude gratuite
+            </a>
+            <button
+              type="button"
+              onClick={onOpenDetails}
+              className="inline-flex items-center justify-center border border-white/70 hover:bg-white/10 text-white px-7 py-3 rounded-xl font-bold transition-all"
+            >
+              L&apos;offre en détail
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  </section>
+);
+
+const CyberSliderModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = [
+    {
+      icon: ShieldAlert,
+      title: "L'État de la menace",
+      text: "Une cyberattaque est un acte de malveillance informatique pouvant entraîner des répercussions graves sur votre activité et votre image. Qu'il s'agisse de virus, piratage, vol de données ou cyber-rançonnage, le risque est une réalité incontestable pour tout secteur.",
+      highlight: 'Le + : Une réponse globale qui va au-delà de la simple assurance.',
+    },
+    {
+      icon: Gauge,
+      title: 'Services de Prévention',
+      text: 'Global Cyber Secure inclut des services pour évaluer la performance et la maturité cyber de votre organisation de manière automatisée. Bénéficiez d’une plateforme de sensibilisation gamifiée (Kamaé) avec des tests de phishing et des micro-learnings interactifs.',
+      highlight: 'Le + : Notation hebdomadaire non intrusive pour piloter votre progression.',
+    },
+    {
+      icon: Lock,
+      title: "Garanties d'Assurance",
+      text: "Le contrat prend en charge la baisse de chiffre d'affaires (Pertes d'exploitation), la reconstitution des données et les pertes pécuniaires liées au détournement de fonds. Protection incluse pour l'atteinte à l'e-réputation et le vol de données personnelles.",
+      highlight: 'Le + : Option Responsabilité Civile pour les dommages causés aux tiers.',
+    },
+    {
+      icon: PhoneCall,
+      title: 'Gestion de Crise & Assistance',
+      text: 'En cas de crise, AXA vous accompagne 24h/24 et 7j/7 avec des experts en communication et une plateforme téléphonique dédiée. Vous profitez aussi d’une assistance juridique pour vos décisions et d’un soutien psychologique pour vos équipes.',
+      highlight: 'Le + : Accompagnement complet incluant expertise et assistance informatique.',
+    },
+  ];
+
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onEsc);
+    return () => window.removeEventListener('keydown', onEsc);
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!isOpen) setCurrentSlide(0);
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  const goPrev = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  const goNext = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+
+  return (
+    <div className="fixed inset-0 z-[110] p-4 sm:p-6 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        onClick={onClose}
+        className="absolute inset-0 bg-black/70 backdrop-blur-[4px]"
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 22, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        className="relative w-full max-w-4xl rounded-3xl border border-white/15 bg-gradient-to-br from-[#031224] to-[#0a2a52] text-white shadow-2xl overflow-hidden"
+      >
+        <div className="px-5 sm:px-7 py-4 border-b border-white/10 flex items-center justify-between">
+          <h3 className="text-base sm:text-lg font-bold">Global Cyber Secure</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fermer la modale"
+            className="w-9 h-9 rounded-full border border-white/20 text-white/90 hover:bg-white/10 transition-colors"
+          >
+            <X className="w-5 h-5 mx-auto" />
+          </button>
+        </div>
+
+        <div className="overflow-hidden touch-pan-y">
+          <motion.div
+            className="flex"
+            animate={{ x: `-${currentSlide * 100}%` }}
+            transition={{ type: 'spring', stiffness: 280, damping: 30 }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            onDragEnd={(_event, info: any) => {
+              if (info.offset.x < -80) goNext();
+              if (info.offset.x > 80) goPrev();
+            }}
+          >
+            {slides.map((slide, index) => {
+              const Icon = slide.icon;
+              return (
+                <div key={index} className="min-w-full px-5 sm:px-7 py-6 sm:py-8">
+                  <div className="relative rounded-2xl border border-white/15 bg-white/[0.04] p-5 sm:p-7 min-h-[300px] sm:min-h-[280px]">
+                    <Icon className="absolute -top-3 -right-3 w-20 h-20 text-accent opacity-40" />
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-11 h-11 rounded-xl border border-accent/40 bg-accent/10 flex items-center justify-center">
+                        <Icon className="w-6 h-6 text-accent" />
+                      </div>
+                      <h4 className="text-lg sm:text-xl font-bold">{slide.title}</h4>
+                    </div>
+                    <p className="text-sm sm:text-base text-white/85 leading-relaxed">{slide.text}</p>
+                    <p className="mt-4 text-sm sm:text-base font-semibold text-accent">{slide.highlight}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </motion.div>
+        </div>
+
+        <div className="px-5 sm:px-7 py-4 border-t border-white/10 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={goPrev}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/25 text-sm font-semibold hover:bg-white/10 transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" /> Précédent
+          </button>
+          <div className="flex items-center gap-2">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setCurrentSlide(i)}
+                aria-label={`Aller à la slide ${i + 1}`}
+                className={`h-2.5 rounded-full transition-all ${currentSlide === i ? 'w-6 bg-accent' : 'w-2.5 bg-white/40'}`}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={goNext}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/25 text-sm font-semibold hover:bg-white/10 transition-colors"
+          >
+            Suivant <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
 
 const ServiceCard = ({ icon: Icon, title, description, image }: any) => (
   <motion.div 
@@ -392,7 +619,7 @@ const WhyUs = () => (
         <div className="relative">
           <div className="aspect-square rounded-2xl overflow-hidden shadow-sm border border-gray-100">
             <img 
-              src="/images/pourquoi-nous-courtier.jpg" 
+              src={`${import.meta.env.BASE_URL}images/pourquoi-nous-courtier-v2.jpg`} 
               alt="Cabinet courtier assurance expert, conseil de confiance business casual" 
               className="w-full h-full max-w-full object-cover"
             />
@@ -522,14 +749,14 @@ const Footer = ({ onOpenLegal, onOpenAbout, onOpenPrivacy }: { onOpenLegal: () =
         <div className="col-span-2">
           <div className="flex items-center gap-3 mb-6">
             <img 
-              src="/logo.png" 
+              src={`${import.meta.env.BASE_URL}logo.jpg`} 
               alt="Easy Courtage Assurance Logo" 
               className="h-12 w-auto object-contain"
               onError={(e) => e.currentTarget.style.display = 'none'}
             />
-            <span className="text-2xl font-extrabold tracking-tight">
-              <span className="bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent italic">Easy</span>
-              <span className="text-primary ml-1">Courtage Assurance</span>
+            <span className="text-xl tracking-tight flex flex-col">
+              <span className="text-gray-400 italic text-2xl font-light leading-none">Easy</span>
+              <span className="text-primary text-lg font-extrabold">Courtage Assurance</span>
             </span>
           </div>
           <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
@@ -730,7 +957,7 @@ const PrivacyModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                 Easy Courtage Assurance — 47 rue Victor Hugo, 94140 Alfortville<br />
                 N° SIRET : 524 966 421 00017 — Immatriculée à l'ORIAS sous le n° 10 058 195<br />
                 Contact : <a href="mailto:sg@easycourtage.fr" className="text-[#003f7f] font-bold">sg@easycourtage.fr</a><br />
-                Responsable du traitement des données : Easy Courtage Assurance
+                Responsable du traitement des données : Sevan Gunahsiz
               </p>
             </section>
 
@@ -1116,6 +1343,7 @@ export default function App() {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isMapsOpen, setIsMapsOpen] = useState(false);
+  const [isCyberModalOpen, setIsCyberModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white font-sans text-navy selection:bg-accent selection:text-white">
@@ -1124,6 +1352,7 @@ export default function App() {
         <Hero />
         <Stats />
         <Services />
+        <CyberCampaign onOpenDetails={() => setIsCyberModalOpen(true)} />
         <WhyUs />
         <Agencies onOpenMaps={() => setIsMapsOpen(true)} />
         <Contact />
@@ -1137,6 +1366,7 @@ export default function App() {
       <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
       <MapsModal isOpen={isMapsOpen} onClose={() => setIsMapsOpen(false)} />
+      <CyberSliderModal isOpen={isCyberModalOpen} onClose={() => setIsCyberModalOpen(false)} />
       <CookieBanner />
       
       {/* Floating Action Button for Mobile */}
