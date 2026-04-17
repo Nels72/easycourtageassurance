@@ -1,0 +1,14 @@
+RewriteEngine On
+
+# Force HTTPS on canonical domain
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://easycourtage.fr%{REQUEST_URI} [L,R=301]
+
+# Force non-www canonical host
+RewriteCond %{HTTP_HOST} ^www\.easycourtage\.fr$ [NC]
+RewriteRule ^ https://easycourtage.fr%{REQUEST_URI} [L,R=301]
+
+# SPA fallback: route unknown paths to index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
