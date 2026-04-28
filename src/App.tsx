@@ -132,7 +132,7 @@ const Navbar = () => (
       <div className="flex justify-between items-center h-20">
         <div className="flex items-center gap-3">
           <img
-            src={`${import.meta.env.BASE_URL}logo.jpg`}
+            src={`${import.meta.env.BASE_URL}logo-puzzle.png`}
             alt="Easy Courtage Assurance"
             style={{
               height: '38px',
@@ -738,7 +738,7 @@ const Footer = ({ onOpenLegal, onOpenAbout, onOpenPrivacy }: { onOpenLegal: () =
         <div className="col-span-2">
           <div className="flex items-center gap-3 mb-6">
             <img 
-              src={`${import.meta.env.BASE_URL}logo.jpg`} 
+              src={`${import.meta.env.BASE_URL}logo-puzzle.png`} 
               alt="Easy Courtage Assurance Logo" 
               className="h-12 w-auto object-contain"
               onError={(e) => e.currentTarget.style.display = 'none'}
