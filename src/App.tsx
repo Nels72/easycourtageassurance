@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Phone, 
   Mail, 
@@ -22,7 +22,8 @@ import {
   KeyRound,
   Gauge,
   Lock,
-  PhoneCall
+  PhoneCall,
+  MessageCircle
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -85,7 +86,7 @@ const CookieBanner = () => {
           <div>
             <h4 className="text-[0.95rem] font-bold text-[#003f7f] mb-1">Cookies & confidentialité</h4>
             <p className="text-[0.82rem] text-[#5a6478] leading-relaxed">
-              Nous utilisons des cookies fonctionnels nécessaires au formulaire de devis (Tally) et des cookies de mesure d'audience (Google Analytics) pour mieux comprendre l'utilisation du site. Aucun cookie publicitaire ou de tracking commercial n'est utilisé.
+              Nous utilisons des cookies fonctionnels et des cookies de mesure d'audience (Google Analytics) pour mieux comprendre l'utilisation du site. Aucun cookie publicitaire ou de tracking commercial n'est utilisé.
             </p>
           </div>
         </div>
@@ -152,16 +153,13 @@ const Navbar = () => (
           <a href="#services" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Nos Assurances</a>
           <a href="#pourquoi" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Pourquoi Nous</a>
           <a href="#agences" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Notre Agence</a>
-          <a href="#contact" className="bg-accent hover:bg-accent-dark text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-all shadow-md hover:shadow-lg">
-            Demander un devis
-          </a>
         </div>
       </div>
     </div>
   </nav>
 );
 
-const Hero = () => (
+const Hero = ({ onOpenAlex }: { onOpenAlex: () => void }) => (
   <section className="relative bg-primary overflow-hidden py-20 lg:py-32">
     <div className="absolute inset-0 opacity-10">
       <img 
@@ -188,9 +186,14 @@ const Hero = () => (
             Nous comparons les meilleures offres du marché pour vous garantir une protection optimale au tarif le plus juste.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#contact" className="bg-accent hover:bg-accent-dark text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl hover:-translate-y-1">
-              Obtenir un devis 
-            </a>
+            <button
+              type="button"
+              onClick={onOpenAlex}
+              className="bg-accent hover:bg-accent-dark text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl hover:-translate-y-1 flex items-center justify-center gap-2"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Obtenir un devis
+            </button>
             <a href="tel:0143781431" className="bg-white/10 hover:bg-white/20 text-white border border-white/30 px-8 py-4 rounded-xl font-bold text-lg transition-all backdrop-blur-sm">
               Nous appeler
             </a>
@@ -220,7 +223,7 @@ const Stats = () => (
   </div>
 );
 
-const CyberCampaign = ({ onOpenDetails }: { onOpenDetails: () => void }) => (
+const CyberCampaign = ({ onOpenDetails, onOpenAlex }: { onOpenDetails: () => void; onOpenAlex: () => void }) => (
   <section className="py-24 bg-gradient-to-br from-[#001a33] to-[#003f7f] text-white">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <motion.div
@@ -284,12 +287,14 @@ const CyberCampaign = ({ onOpenDetails }: { onOpenDetails: () => void }) => (
 
         <div className="mt-10 flex flex-col items-center gap-4">
           <div className="flex flex-col sm:flex-row justify-center gap-3 w-full sm:w-auto">
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center bg-accent hover:bg-accent-dark text-white px-7 py-3 rounded-xl font-bold transition-all"
+            <button
+              type="button"
+              onClick={onOpenAlex}
+              className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white px-7 py-3 rounded-xl font-bold transition-all"
             >
+              <MessageCircle className="w-4 h-4" />
               Demander une étude gratuite
-            </a>
+            </button>
             <button
               type="button"
               onClick={onOpenDetails}
@@ -628,104 +633,91 @@ const WhyUs = () => (
   </section>
 );
 
-const Agencies = ({ onOpenMaps }: { onOpenMaps: () => void }) => (
+const AgenciesAndContact = ({ onOpenMaps, onOpenAlex }: { onOpenMaps: () => void; onOpenAlex: () => void }) => (
   <section id="agences" className="py-24 bg-navy text-white">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center mb-16">
-        <h2 className="text-sm font-bold text-accent uppercase tracking-widest mb-4">Nos Agences</h2>
+      <div className="text-center mb-12">
+        <h2 className="text-sm font-bold text-accent uppercase tracking-widest mb-4">Notre Cabinet</h2>
         <h3 className="text-3xl md:text-4xl font-extrabold">Où nous trouver ?</h3>
       </div>
-      <div className="grid md:grid-cols-1 max-w-2xl mx-auto gap-8">
-        {[
-          {
-            city: "Alfortville",
-            address: "47 rue Victor Hugo, 94140 Alfortville",
-            phone: "01 43 78 14 31",
-            email: "easy@easycourtage.fr",
-          }
-        ].map((agency, i) => (
-          <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
-            <h4 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <MapPin className="text-accent" /> {agency.city}
-            </h4>
-            <div className="space-y-4 text-white/70">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
-                <span 
-                  id="link-maps" 
-                  className="cursor-pointer underline decoration-dotted hover:text-white transition-colors"
-                  onClick={onOpenMaps}
-                >
-                  {agency.address} <span className="text-xs">↗</span>
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-accent" />
-                <a href={`tel:${agency.phone.replace(/\s/g, '')}`} className="hover:text-white transition-colors">{agency.phone}</a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-accent" />
-                <a href={`mailto:${agency.email}`} className="hover:text-white transition-colors">{agency.email}</a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-accent" />
-                <span>Lun - Ven : 9h30 - 12h30 - 14h00 - 19h00 - Sam : 9h30 - 13h00 </span>
-              </div>
-            </div>
-            <div className="mt-8">
-              <a 
-                href={`mailto:${agency.email}`}
-                className="inline-block w-full text-center bg-primary hover:bg-primary-light text-white py-3 rounded-xl font-bold transition-all"
-              >
-                Contacter l'agence
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-);
 
-const Contact = () => (
-  <section id="contact" className="py-24 bg-soft">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-        <div className="grid lg:grid-cols-2">
-          <div className="p-12 lg:p-20 bg-primary text-white">
-            <h2 className="text-sm font-bold text-white/60 uppercase tracking-widest mb-4">Contactez-nous</h2>
-            <h3 className="text-3xl md:text-4xl font-extrabold mb-8">Prêt à faire des économies ?</h3>
-            <p className="text-white/70 mb-12 leading-relaxed">
-              Remplissez le formulaire ci-contre ou appelez-nous directement. Nos experts étudient votre dossier sous 24h.
-            </p>
-            <div className="space-y-6">
-              {[
-                "Analyse gratuite de vos contrats actuels",
-                "Optimisation de vos garanties",
-                "Accompagnement en cas de sinistre"
-          
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <CheckCircle2 className="text-accent w-6 h-6" />
-                  <span className="font-medium">{item}</span>
-                </div>
-              ))}
+      <div className="grid lg:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
+
+        {/* Carte agence — gauche */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm flex flex-col">
+          <h4 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <MapPin className="text-accent" /> Alfortville
+          </h4>
+          <div className="space-y-4 text-white/70 flex-1">
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
+              <span
+                id="link-maps"
+                className="cursor-pointer underline decoration-dotted hover:text-white transition-colors"
+                onClick={onOpenMaps}
+              >
+                47 rue Victor Hugo, 94140 Alfortville <span className="text-xs">↗</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Phone className="w-5 h-5 text-accent" />
+              <a href="tel:0143781431" className="hover:text-white transition-colors">01 43 78 14 31</a>
+            </div>
+            <div className="flex items-center gap-3">
+              <Mail className="w-5 h-5 text-accent" />
+              <a href="mailto:easy@easycourtage.fr" className="hover:text-white transition-colors">easy@easycourtage.fr</a>
+            </div>
+            <div className="flex items-center gap-3">
+              <Clock className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
+              <span>
+                Lun - Ven : 9h30 - 12h30 · 14h00 - 19h00<br />
+                Sam : 9h30 - 13h00
+              </span>
             </div>
           </div>
-          <div className="p-8 lg:p-12">
-            {/* Tally Form Embed Placeholder or actual iframe */}
-            <div className="h-full min-h-[500px] w-full bg-gray-50 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-200">
-              <iframe
-                src="https://tally.so/embed/44vJYr?alignLeft=1&hideTitle=1&transparentBackground=1"
-                loading="lazy"
-                width="100%"
-                height="100%"
-                className="w-full h-full min-h-[500px]"
-                title="Sollicitation Devis Assurance"
-              ></iframe>
-            </div>
+          <div className="mt-8">
+            <a
+              href="mailto:easy@easycourtage.fr"
+              className="inline-block w-full text-center bg-primary hover:bg-primary-light text-white py-3 rounded-xl font-bold transition-all"
+            >
+              Contacter l'agence
+            </a>
           </div>
         </div>
+
+        {/* Carte contact — droite */}
+        <div id="contact" className="bg-primary rounded-2xl p-8 flex flex-col">
+          <h3 className="text-xl md:text-2xl font-extrabold mb-4 text-white">
+            Prêt·e à faire des économies ?
+          </h3>
+          <p className="text-white/75 mb-6 leading-relaxed">
+            Notre assistante Alex est disponible.<br />
+            Nos experts étudient votre dossier sous 24h.
+          </p>
+          <div className="flex flex-col gap-4 mb-8 text-white/70">
+            {[
+              "Analyse gratuite de vos contrats actuels",
+              "Optimisation de vos garanties",
+              "Accompagnement en cas de sinistre",
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <CheckCircle2 className="text-accent w-5 h-5 flex-shrink-0" />
+                <span className="font-medium text-sm">{item}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-auto">
+            <button
+              type="button"
+              onClick={onOpenAlex}
+              className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white w-full py-3 rounded-xl font-bold transition-all"
+            >
+              <MessageCircle className="w-5 h-5" />
+              C'est parti !
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -1327,24 +1319,106 @@ const MapsModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
   );
 };
 
+const AlexModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onEsc);
+    return () => window.removeEventListener('keydown', onEsc);
+  }, [onClose]);
+
+  const handleIframeLoad = () => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+    const doc = iframe.contentDocument;
+    const win = iframe.contentWindow;
+    if (!doc || !win) return;
+
+    // Masquer la barre de scroll
+    const style = doc.createElement('style');
+    style.textContent = `
+      ::-webkit-scrollbar { display: none !important; }
+      * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+    `;
+    doc.head.appendChild(style);
+
+    // Centrer chaque nouveau message dans la fenêtre au fur et à mesure
+    const msgs = doc.getElementById('msgs');
+    if (!msgs) return;
+    const observer = new MutationObserver(() => {
+      const last = msgs.lastElementChild as HTMLElement | null;
+      if (!last) return;
+      const targetY = last.offsetTop - win.innerHeight / 2 + last.offsetHeight / 2;
+      win.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+    });
+    observer.observe(msgs, { childList: true });
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+      />
+      <motion.div
+        initial={{ opacity: 0, y: 60, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 60 }}
+        transition={{ type: 'spring', damping: 22, stiffness: 300 }}
+        className="relative z-10 w-full sm:w-[480px]"
+      >
+        <div
+          className="w-full bg-white rounded-t-[32px] sm:rounded-[32px] shadow-2xl overflow-hidden relative"
+          style={{ height: 'min(780px, 92dvh)' }}
+        >
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center transition-colors"
+            aria-label="Fermer"
+          >
+            <X className="w-4 h-4 text-white" />
+          </button>
+          <iframe
+            ref={iframeRef}
+            src="/alex/chatbot_eca_v11_final.html"
+            title="Alex - Demande de devis assurance"
+            className="w-full h-full border-0"
+            loading="lazy"
+            allow="clipboard-write"
+            onLoad={handleIframeLoad}
+          />
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 export default function App() {
   const [isLegalOpen, setIsLegalOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isMapsOpen, setIsMapsOpen] = useState(false);
   const [isCyberModalOpen, setIsCyberModalOpen] = useState(false);
+  const [isAlexOpen, setIsAlexOpen] = useState(false);
+
+  const openAlex = () => setIsAlexOpen(true);
 
   return (
     <div className="min-h-screen bg-white font-sans text-navy selection:bg-accent selection:text-white">
       <Navbar />
       <main>
-        <Hero />
+        <Hero onOpenAlex={openAlex} />
         <Stats />
         <Services />
-        <CyberCampaign onOpenDetails={() => setIsCyberModalOpen(true)} />
+        <CyberCampaign onOpenDetails={() => setIsCyberModalOpen(true)} onOpenAlex={openAlex} />
         <WhyUs />
-        <Agencies onOpenMaps={() => setIsMapsOpen(true)} />
-        <Contact />
+        <AgenciesAndContact onOpenMaps={() => setIsMapsOpen(true)} onOpenAlex={openAlex} />
       </main>
       <Footer 
         onOpenLegal={() => setIsLegalOpen(true)} 
@@ -1356,6 +1430,7 @@ export default function App() {
       <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
       <MapsModal isOpen={isMapsOpen} onClose={() => setIsMapsOpen(false)} />
       <CyberSliderModal isOpen={isCyberModalOpen} onClose={() => setIsCyberModalOpen(false)} />
+      <AlexModal isOpen={isAlexOpen} onClose={() => setIsAlexOpen(false)} />
       <CookieBanner />
       
       {/* Floating Action Button for Mobile */}
