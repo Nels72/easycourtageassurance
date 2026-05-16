@@ -166,7 +166,7 @@ let ALEX_DATA = null;
 fetch('./alex-lottie.json').then(r=>r.json()).then(d=>{ALEX_DATA=d;}).catch(()=>{console.warn('Lottie JSON non trouvé, avatar statique');});
 
 const WEBHOOK_URL = 'https://hook.eu1.make.com/ljj5zijhjxavez2kjo7ouhrbcf0liny7';
-const LOOKUP_URL  = 'https://n8n2.srv1070115.hstgr.cloud/webhook/alex-lookup';
+const LOOKUP_URL  = '/api/alex-lookup';
 const UPLOADCARE_PUBLIC_KEY = 'a66f066444c9f0f50bfb';
 
 const D = {}, history = [];
