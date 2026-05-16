@@ -1,2 +1,2 @@
-/api/alex-lookup  https://n8n2.srv1070115.hstgr.cloud/webhook/alex-lookup  200
+/api/alex-lookup  /.netlify/functions/alex-lookup  200
 https://easycourtage-assurance.fr/* https://easycourtage.fr/:splat 301!
