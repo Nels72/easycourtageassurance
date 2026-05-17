@@ -288,7 +288,7 @@ const S = [
          d.profil==='Professionnel'?['Auto','Local Professionnel','RC Professionnelle','Flotte Auto','Mutuelle Sant\u00e9','Sant\u00e9 & Pr\u00e9voyance Collective']:
          ['Auto','RC D\u00e9cennale','Flotte Auto','Sant\u00e9 & Pr\u00e9voyance Collective','Cyber Risque','RC Entreprise'],
     save:'produit', next:d=>{
-      if(d.produit==='Assurance emprunteur') return 28; // redirect simulateur
+      if(d.produit==='Assurance emprunteur') return (D.email || D._lookup_email) ? 28 : 29; // redirect simulateur (email requis)
       if(['Auto','Moto','Cycle'].includes(d.produit)) return 7; // permis
       if(d.produit==='Flotte Auto') return 10; // assuré 36 mois
       if(d.produit==='RC D\u00e9cennale') return 24; // RCD spécifique
@@ -363,8 +363,10 @@ const S = [
   {id:'recap', type:'recap', next:()=>27},
   // 27 - Done
   {id:'done', type:'done'},
-  // 28 - Assurance emprunteur → redirect simulateur (doit rester en dernière position hors done)
-  {id:'emprunteur_redirect', type:'borrower_redirect', bot:"L\u2019assurance emprunteur m\u00e9rite une analyse d\u00e9di\u00e9e \u2014 taux, quotit\u00e9, garanties ITT/IPT... c\u2019est tr\u00e8s sp\u00e9cifique \u00e0 votre pr\u00eat. \ud83c\udfe0 Je vous ouvre notre simulateur assurance de pr\u00eat, adapt\u00e9 \u00e0 ce besoin."}
+  // 28 - Assurance emprunteur → redirect simulateur
+  {id:'emprunteur_redirect', type:'borrower_redirect', bot:"L\u2019assurance emprunteur m\u00e9rite une analyse d\u00e9di\u00e9e \u2014 taux, quotit\u00e9, garanties ITT/IPT... c\u2019est tr\u00e8s sp\u00e9cifique \u00e0 votre pr\u00eat. \ud83c\udfe0 Je vous ouvre notre simulateur assurance de pr\u00eat, adapt\u00e9 \u00e0 ce besoin."},
+  // 29 - Email requis avant redirect simulateur (nouveau prospect sans email)
+  {id:'email_emprunteur', bot:d=>"Avant d\u2019acc\u00e9der au simulateur, j\u2019ai juste besoin de votre adresse email, "+d.prenom+" \u2014 pour faire le lien avec votre demande. \ud83d\udce7", type:'input', ph:'Ex : sophie.dupont@email.fr', save:'email', validate:'email', lowercase:true, next:()=>28}
 ];
 
 const TOTAL = S.length;
