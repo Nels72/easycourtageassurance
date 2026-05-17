@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alex — Assistant Easy Courtage Assurance</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
   <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap');
@@ -30,13 +29,13 @@
 
     /* ── Avatar Alex ── */
     .alex-wrap{position:relative;flex-shrink:0}
-    .alex-lottie{width:52px;height:52px;border-radius:50%;overflow:hidden;background:var(--ci-light);border:2px solid var(--ci-light);transition:border-color .4s}
+    .alex-lottie{width:52px;height:52px;border-radius:50%;overflow:hidden;background:var(--ci);border:2px solid var(--ci-light);transition:border-color .4s;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:22px;font-family:'Sora',sans-serif;flex-shrink:0}
     .alex-lottie.thinking{border-color:rgba(245,158,11,.5)}
     .alex-lottie.success{border-color:rgba(16,185,129,.5)}
     #alex-container{width:100%;height:100%}
 
     /* ── Avatar bulle (petit) ── */
-    .av-bubble{width:28px;height:28px;border-radius:50%;overflow:hidden;background:var(--ci-light);flex-shrink:0}
+    .av-bubble{width:28px;height:28px;border-radius:50%;overflow:hidden;background:var(--ci);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;font-family:'Sora',sans-serif}
     .av-bubble-lottie{width:100%;height:100%}
 
     /* ── Progress ── */
@@ -140,9 +139,7 @@
 <div class="cw">
   <div class="ch">
     <div class="alex-wrap">
-      <div class="alex-lottie" id="alex-avatar">
-        <div id="alex-container"></div>
-      </div>
+      <div class="alex-lottie" id="alex-avatar">A</div>
     </div>
     <div class="ch-info">
       <div class="ch-name">Alex <span class="ch-state-dot" id="state-dot"></span></div>
@@ -161,9 +158,6 @@
 </div>
 
 <script>
-// ── Lottie data (chargé depuis fichier externe) ──
-let ALEX_DATA = null;
-fetch('./alex-lottie.json').then(r=>r.json()).then(d=>{ALEX_DATA=d;}).catch(()=>{console.warn('Lottie JSON non trouvé, avatar statique');});
 
 const WEBHOOK_URL = 'https://hook.eu1.make.com/ljj5zijhjxavez2kjo7ouhrbcf0liny7';
 const LOOKUP_URL  = '/api/alex-lookup';
@@ -171,7 +165,7 @@ const UPLOADCARE_PUBLIC_KEY = 'a66f066444c9f0f50bfb';
 const UPLOADCARE_CDN_BASE = 'https://3z7o986o1b.ucarecd.net';
 
 const D = {}, history = [];
-let cur = 0, alexAnim = null, isExistingClient = false;
+let cur = 0, isExistingClient = false;
 
 /* ── Capitalisation prénom/nom (Marie-Claire, Jean-Pierre) ── */
 function capitalizeName(str) {
@@ -224,18 +218,8 @@ function uploadFile(file, onProgress) {
   });
 }
 
-/* ── Init Lottie ── */
-function initAlex() {
-  if (!ALEX_DATA) {
-    setTimeout(initAlex, 100);
-    return;
-  }
-  alexAnim = lottie.loadAnimation({
-    container: document.getElementById('alex-container'),
-    renderer: 'svg', loop: true, autoplay: true,
-    animationData: ALEX_DATA
-  });
-}
+/* ── Avatar "A" (remplace Lottie) ── */
+function initAlex() {}
 
 function setAlexState(state) {
   const avatar = document.getElementById('alex-avatar');
@@ -243,14 +227,13 @@ function setAlexState(state) {
   const sub = document.getElementById('ch-sub');
   avatar.className = 'alex-lottie' + (state !== 'idle' ? ' ' + state : '');
   dot.className = 'ch-state-dot' + (state !== 'idle' ? ' ' + state : '');
-  if (state === 'thinking') { if(alexAnim) alexAnim.setSpeed(0.5); sub.textContent = 'En train de r\u00e9pondre...'; }
-  else if (state === 'success') { if(alexAnim) alexAnim.setSpeed(2); sub.textContent = 'Demande envoy\u00e9e !'; }
-  else { if(alexAnim) alexAnim.setSpeed(1); sub.textContent = 'Assistant Easy Courtage Assurance'; }
+  if (state === 'thinking') { sub.textContent = 'En train de r\u00e9pondre...'; }
+  else if (state === 'success') { sub.textContent = 'Demande envoy\u00e9e !'; }
+  else { sub.textContent = 'Assistant Easy Courtage Assurance'; }
 }
 
 function createBubbleLottie(container) {
-  if (!ALEX_DATA) return;
-  lottie.loadAnimation({ container, renderer: 'svg', loop: true, autoplay: true, animationData: ALEX_DATA });
+  container.textContent = 'A';
 }
 
 /* ── Contrat précédent — niveaux par produit ── */
@@ -768,7 +751,7 @@ function showMultiUpload(accept, save, saveUrl, optional, cb) {
     D[save] = names;
     if (saveUrl) D[saveUrl] = uploadedFiles.map(f => f.url);
     clearUI();
-    cb(names, urls);
+    cb(names, D[saveUrl] || []);
   };
 }
 
