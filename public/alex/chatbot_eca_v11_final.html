@@ -765,9 +765,8 @@ function showMultiUpload(accept, save, saveUrl, optional, cb) {
   btnAdd.onclick = () => { document.getElementById(uzId).click(); };
   btnDone.onclick = () => {
     const names = uploadedFiles.map(f => f.name).join(', ');
-    const urls = uploadedFiles.map(f => f.url).join(', ');
     D[save] = names;
-    if (saveUrl) D[saveUrl] = urls;
+    if (saveUrl) D[saveUrl] = uploadedFiles.map(f => f.url);
     clearUI();
     cb(names, urls);
   };
@@ -819,7 +818,7 @@ async function sendToMake() {
     fichier_ri: D.fichier_ri || null,
     fichier_ri_url: D.fichier_ri_url || null,
     docs_utiles: D.docs_utiles || null,
-    docs_utiles_url: D.docs_utiles_url ? D.docs_utiles_url.split(', ').filter(u=>u) : [],
+    docs_utiles_url: Array.isArray(D.docs_utiles_url) ? D.docs_utiles_url : [],
     contrat_precedent: D.contrat_precedent || null,
     contrat_precedent_url: D.contrat_precedent_url ? [D.contrat_precedent_url] : [],
     situation: D.situation || null,
