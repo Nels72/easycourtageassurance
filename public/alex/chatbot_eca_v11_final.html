@@ -982,7 +982,7 @@ async function runStep(idx, isBack=false) {
       el.innerHTML = buildRecap(); m.appendChild(el); m.scrollTop = m.scrollHeight;
       showOpts(['\u2705 Confirmer et envoyer','\u21a9 Recommencer'], choice => {
         if (choice.includes('Recommencer')) { Object.keys(D).forEach(k => delete D[k]); history.length = 0; isExistingClient = false; document.getElementById('msgs').innerHTML = ''; runStep(0); }
-        else { userMsg('Confirmer et envoyer').then(() => runStep(S.length - 1)); }
+        else { userMsg('Confirmer et envoyer').then(() => runStep(27)); }
       });
     }, 900);
     return;
