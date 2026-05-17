@@ -818,9 +818,9 @@ async function sendToMake() {
     fichier_ri: D.fichier_ri || null,
     fichier_ri_url: D.fichier_ri_url || null,
     docs_utiles: D.docs_utiles || null,
-    docs_utiles_url: D.docs_utiles_url || null,
+    docs_utiles_url: D.docs_utiles_url ? D.docs_utiles_url.split(', ').filter(u=>u) : [],
     contrat_precedent: D.contrat_precedent || null,
-    contrat_precedent_url: D.contrat_precedent_url || null,
+    contrat_precedent_url: D.contrat_precedent_url ? [D.contrat_precedent_url] : [],
     situation: D.situation || null,
     prenom: D.prenom || null,
     nom: D.nom || null,
@@ -834,7 +834,7 @@ async function sendToMake() {
     contact_pref: D.contact_pref || null,
     _deja_client: D._deja_client || null,
     _lookup_email: D._lookup_email || null,
-    source: 'alex_chatbot',
+    source: 'Alex Web Public',
     submitted_at: new Date().toISOString()
   };
 
