@@ -285,8 +285,8 @@ const S = [
   // 6 - Produit
   {id:'produit', bot:"Quel type de couverture vous am\u00e8ne aujourd\u2019hui ?", type:'opts',
     opts:d=>d.profil==='Particulier'?['Auto','Habitation','Moto','Mutuelle Sant\u00e9','Cyber Risque','Cycle']:
-         d.profil==='Professionnel'?['Local Professionnel','RC Professionnelle','Flotte Auto','Mutuelle Sant\u00e9','Sant\u00e9 & Pr\u00e9voyance Collective']:
-         ['RC D\u00e9cennale','Flotte Auto','Sant\u00e9 & Pr\u00e9voyance Collective','Cyber Risque','RC Entreprise'],
+         d.profil==='Professionnel'?['Auto','Local Professionnel','RC Professionnelle','Flotte Auto','Mutuelle Sant\u00e9','Sant\u00e9 & Pr\u00e9voyance Collective']:
+         ['Auto','RC D\u00e9cennale','Flotte Auto','Sant\u00e9 & Pr\u00e9voyance Collective','Cyber Risque','RC Entreprise'],
     save:'produit', next:d=>{
       if(['Auto','Moto','Cycle'].includes(d.produit)) return 7; // permis
       if(d.produit==='Flotte Auto') return 10; // assuré 36 mois
