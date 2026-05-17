@@ -284,10 +284,11 @@ const S = [
   {id:'profil', bot:d=>'Parfait '+d.prenom+'. Pour commencer, vous faites cette demande en tant que... ?', type:'opts', opts:['Particulier','Professionnel','Entreprise'], save:'profil', next:()=>6},
   // 6 - Produit
   {id:'produit', bot:"Quel type de couverture vous am\u00e8ne aujourd\u2019hui ?", type:'opts',
-    opts:d=>d.profil==='Particulier'?['Auto','Habitation','Moto','Mutuelle Sant\u00e9','Cyber Risque','Cycle']:
+    opts:d=>d.profil==='Particulier'?['Auto','Habitation','Moto','Mutuelle Sant\u00e9','Assurance emprunteur','Cycle']:
          d.profil==='Professionnel'?['Auto','Local Professionnel','RC Professionnelle','Flotte Auto','Mutuelle Sant\u00e9','Sant\u00e9 & Pr\u00e9voyance Collective']:
          ['Auto','RC D\u00e9cennale','Flotte Auto','Sant\u00e9 & Pr\u00e9voyance Collective','Cyber Risque','RC Entreprise'],
     save:'produit', next:d=>{
+      if(d.produit==='Assurance emprunteur') return 28; // redirect simulateur
       if(['Auto','Moto','Cycle'].includes(d.produit)) return 7; // permis
       if(d.produit==='Flotte Auto') return 10; // assuré 36 mois
       if(d.produit==='RC D\u00e9cennale') return 24; // RCD spécifique
@@ -361,7 +362,9 @@ const S = [
   // 26 - Recap
   {id:'recap', type:'recap', next:()=>27},
   // 27 - Done
-  {id:'done', type:'done'}
+  {id:'done', type:'done'},
+  // 28 - Assurance emprunteur → redirect simulateur (doit rester en dernière position hors done)
+  {id:'emprunteur_redirect', type:'borrower_redirect', bot:"L\u2019assurance emprunteur m\u00e9rite une analyse d\u00e9di\u00e9e \u2014 taux, quotit\u00e9, garanties ITT/IPT... c\u2019est tr\u00e8s sp\u00e9cifique \u00e0 votre pr\u00eat. \ud83c\udfe0 Je vous ouvre notre simulateur assurance de pr\u00eat, adapt\u00e9 \u00e0 ce besoin."}
 ];
 
 const TOTAL = S.length;
@@ -1029,6 +1032,10 @@ async function runStep(idx, isBack=false) {
       runStep(s.next(D));
     }, level, skipText);
   }
+  else if (s.type === 'borrower_redirect') {
+    await handleBorrowerRedirect();
+    return;
+  }
   else if (s.type === 'multi_upload') {
     showMultiUpload(s.accept, s.save, s.save_url, s.optional, async(names, urls) => {
       history.push(idx);
@@ -1044,6 +1051,23 @@ async function runStep(idx, isBack=false) {
 }
 
 document.addEventListener('DOMContentLoaded', () => { initAlex(); runStep(0); });
+
+/* ── Borrower redirect handler (appelé depuis runStep via type borrower_redirect) ── */
+async function handleBorrowerRedirect() {
+  // Envoyer le payload Make avec les données collectées
+  await sendToMake();
+  // Afficher le bouton de redirection
+  const z = document.getElementById('uz-zone');
+  z.classList.remove('hidden');
+  const btn = document.createElement('button');
+  btn.className = 'multi-confirm-btn primary';
+  btn.style.cssText = 'width:100%;margin-top:8px;font-size:15px;padding:14px;border-radius:14px;';
+  btn.textContent = '\u2192 Acc\u00e9der au simulateur';
+  btn.onclick = () => {
+    window.parent.postMessage({ action: 'open_borrower_simulator' }, '*');
+  };
+  z.appendChild(btn);
+}
 </script>
 </body>
 </html>

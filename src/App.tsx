@@ -476,8 +476,8 @@ const ServiceCard = ({ icon: Icon, title, description, image }: any) => (
   </motion.div>
 );
 
-const Services = () => {
-  const [isBorrowerModalOpen, setIsBorrowerModalOpen] = useState(false);
+const Services = ({ onOpenBorrower }: { onOpenBorrower: () => void }) => {
+  const isBorrowerModalOpen = false; // géré dans App()
 
   return (
     <section id="services" className="py-24 bg-soft">
@@ -533,7 +533,7 @@ const Services = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setIsBorrowerModalOpen(true)}
+                  onClick={onOpenBorrower}
                   className="inline-flex items-center justify-center self-stretch md:self-center bg-primary hover:bg-primary-light text-white py-3 px-6 rounded-xl font-bold transition-all w-full md:w-auto shrink-0"
                 >
                   Simuler
@@ -544,31 +544,6 @@ const Services = () => {
         </div>
       </div>
 
-      {isBorrowerModalOpen && (
-        <div
-          className="fixed inset-0 z-[10000] bg-black/60 p-4 sm:p-6 flex items-center justify-center"
-          onClick={() => setIsBorrowerModalOpen(false)}
-        >
-          <div
-            className="relative w-full max-w-5xl h-[85vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setIsBorrowerModalOpen(false)}
-              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/95 hover:bg-white text-navy border border-gray-200 flex items-center justify-center transition-colors"
-              aria-label="Fermer la modale"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <iframe
-              src="https://www.magnolia.fr/comparer-assurance-pret-immobilier?utm_source=21066_B2C&whiteLabel=true"
-              frameBorder="0"
-              style={{ width: '100%', height: '100%' }}
-              title="Simulation assurance emprunteur"
-            />
-          </div>
-        </div>
-      )}
     </section>
   );
 };
@@ -1319,6 +1294,42 @@ const MapsModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
   );
 };
 
+const BorrowerModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onEsc);
+    return () => window.removeEventListener('keydown', onEsc);
+  }, [onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[10000] bg-black/60 p-4 sm:p-6 flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-5xl h-[85vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/95 hover:bg-white text-navy border border-gray-200 flex items-center justify-center transition-colors"
+          aria-label="Fermer"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        <iframe
+          src="https://www.magnolia.fr/comparer-assurance-pret-immobilier?utm_source=21066_B2C&whiteLabel=true"
+          frameBorder="0"
+          style={{ width: '100%', height: '100%' }}
+          title="Simulation assurance emprunteur"
+        />
+      </div>
+    </div>
+  );
+};
+
 const AlexModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -1406,8 +1417,21 @@ export default function App() {
   const [isMapsOpen, setIsMapsOpen] = useState(false);
   const [isCyberModalOpen, setIsCyberModalOpen] = useState(false);
   const [isAlexOpen, setIsAlexOpen] = useState(false);
+  const [isBorrowerOpen, setIsBorrowerOpen] = useState(false);
 
   const openAlex = () => setIsAlexOpen(true);
+  const openBorrower = () => setIsBorrowerOpen(true);
+
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.data?.action === 'open_borrower_simulator') {
+        setIsAlexOpen(false);
+        setIsBorrowerOpen(true);
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white font-sans text-navy selection:bg-accent selection:text-white">
@@ -1415,7 +1439,7 @@ export default function App() {
       <main>
         <Hero onOpenAlex={openAlex} />
         <Stats />
-        <Services />
+        <Services onOpenBorrower={openBorrower} />
         <CyberCampaign onOpenDetails={() => setIsCyberModalOpen(true)} onOpenAlex={openAlex} />
         <WhyUs />
         <AgenciesAndContact onOpenMaps={() => setIsMapsOpen(true)} onOpenAlex={openAlex} />
@@ -1431,6 +1455,7 @@ export default function App() {
       <MapsModal isOpen={isMapsOpen} onClose={() => setIsMapsOpen(false)} />
       <CyberSliderModal isOpen={isCyberModalOpen} onClose={() => setIsCyberModalOpen(false)} />
       <AlexModal isOpen={isAlexOpen} onClose={() => setIsAlexOpen(false)} />
+      <BorrowerModal isOpen={isBorrowerOpen} onClose={() => setIsBorrowerOpen(false)} />
       <CookieBanner />
       
       {/* Floating Action Button for Mobile */}
