@@ -168,6 +168,7 @@ fetch('./alex-lottie.json').then(r=>r.json()).then(d=>{ALEX_DATA=d;}).catch(()=>
 const WEBHOOK_URL = 'https://hook.eu1.make.com/ljj5zijhjxavez2kjo7ouhrbcf0liny7';
 const LOOKUP_URL  = '/api/alex-lookup';
 const UPLOADCARE_PUBLIC_KEY = 'a66f066444c9f0f50bfb';
+const UPLOADCARE_CDN_BASE = 'https://3z7o986o1b.ucarecd.net';
 
 const D = {}, history = [];
 let cur = 0, alexAnim = null, isExistingClient = false;
@@ -212,7 +213,7 @@ function uploadFile(file, onProgress) {
       try {
         const res = JSON.parse(xhr.responseText);
         if (res.file) {
-          resolve('https://ucarecdn.com/' + res.file + '/');
+          resolve(UPLOADCARE_CDN_BASE + '/' + res.file + '/' + encodeURIComponent(file.name));
         } else {
           reject(new Error('Upload failed: ' + xhr.responseText));
         }
