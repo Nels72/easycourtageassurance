@@ -167,9 +167,25 @@ const UPLOADCARE_CDN_BASE = 'https://3z7o986o1b.ucarecd.net';
 const D = {}, history = [];
 let cur = 0, isExistingClient = false;
 
-/* ── Capitalisation prénom/nom (Marie-Claire, Jean-Pierre) ── */
+/* ── Capitalisation prénom/nom : première lettre majuscule, reste en minuscules ── */
 function capitalizeName(str) {
-  return str.trim().replace(/\b\w/g, c => c.toUpperCase()).replace(/-\w/g, c => c.toUpperCase());
+  return str.trim()
+    .toLowerCase()
+    .replace(/(^|[\s'-])(\w)/g, (_, sep, c) => sep + c.toUpperCase());
+}
+
+/* ── Téléphone FR : +33 suivi de 10 chiffres (format national 0X XX XX XX XX) ── */
+function normalizeFrenchPhone(raw) {
+  let d = String(raw || '').replace(/\D/g, '');
+  if (d.startsWith('0033')) d = d.slice(4);
+  else if (d.startsWith('33')) d = d.slice(2);
+  if (!d.startsWith('0') && d.length > 0) d = '0' + d;
+  d = d.slice(0, 10);
+  return '+33' + d;
+}
+
+function isValidFrenchPhone(v) {
+  return /^\+330[1-9]\d{8}$/.test(v);
 }
 
 /* ── Lookup client existant via n8n ── */
@@ -284,11 +300,11 @@ const S = [
   {id:'profil', bot:d=>'Parfait '+d.prenom+'. Pour commencer, vous faites cette demande en tant que... ?', type:'opts', opts:['Particulier','Professionnel','Entreprise'], save:'profil', next:()=>6},
   // 6 - Produit
   {id:'produit', bot:"Quel type de couverture vous am\u00e8ne aujourd\u2019hui ?", type:'opts',
-    opts:d=>d.profil==='Particulier'?['Auto','Habitation','Moto','Mutuelle Sant\u00e9','Assurance emprunteur','Cycle']:
+    opts:d=>d.profil==='Particulier'?['Auto','Habitation','Moto','Mutuelle Sant\u00e9','Assurance Emprunteur','Cycle']:
          d.profil==='Professionnel'?['Auto','Local Professionnel','RC Professionnelle','Flotte Auto','Mutuelle Sant\u00e9','Sant\u00e9 & Pr\u00e9voyance Collective']:
          ['Auto','RC D\u00e9cennale','Flotte Auto','Sant\u00e9 & Pr\u00e9voyance Collective','Cyber Risque','RC Entreprise'],
     save:'produit', next:d=>{
-      if(d.produit==='Assurance emprunteur') return (D.email || D._lookup_email) ? 28 : 29; // redirect simulateur (email requis)
+      if(d.produit==='Assurance Emprunteur') return (D.email || D._lookup_email) ? 28 : 29; // redirect simulateur (email requis)
       if(['Auto','Moto','Cycle'].includes(d.produit)) return 7; // permis
       if(d.produit==='Flotte Auto') return 10; // assuré 36 mois
       if(d.produit==='RC D\u00e9cennale') return 24; // RCD spécifique
@@ -363,7 +379,7 @@ const S = [
   {id:'recap', type:'recap', next:()=>27},
   // 27 - Done
   {id:'done', type:'done'},
-  // 28 - Assurance emprunteur → redirect simulateur
+  // 28 - Assurance Emprunteur → redirect simulateur
   {id:'emprunteur_redirect', type:'borrower_redirect', bot:"L\u2019assurance emprunteur m\u00e9rite une analyse d\u00e9di\u00e9e \u2014 taux, quotit\u00e9, garanties ITT/IPT... c\u2019est tr\u00e8s sp\u00e9cifique \u00e0 votre pr\u00eat. \ud83c\udfe0 Je vous ouvre notre simulateur assurance de pr\u00eat, adapt\u00e9 \u00e0 ce besoin."},
   // 29 - Email requis avant redirect simulateur (nouveau prospect sans email)
   {id:'email_emprunteur', bot:d=>"Avant d\u2019acc\u00e9der au simulateur, j\u2019ai juste besoin de votre adresse email, "+d.prenom+" \u2014 pour faire le lien avec votre demande. \ud83d\udce7", type:'input', ph:'Ex : sophie.dupont@email.fr', save:'email', validate:'email', lowercase:true, next:()=>28}
@@ -465,29 +481,19 @@ function applyImmatMask(inp) {
   });
 }
 
-/* ── Phone mask : format +33XXXXXXXXX ── */
+/* ── Phone mask : format +33 + 10 chiffres (0X XX XX XX XX) ── */
 function applyPhoneMask(inp) {
-  inp.setAttribute('maxlength','12'); inp.setAttribute('inputmode','tel');
+  inp.setAttribute('maxlength', '13');
+  inp.setAttribute('inputmode', 'tel');
   inp.value = '+33';
   inp.addEventListener('input', function() {
-    let raw = this.value.replace(/[^\d+]/g,'');
-    // Si l'utilisateur efface le +33
-    if (!raw.startsWith('+33')) {
-      // Essayer de récupérer les chiffres
-      let digits = raw.replace(/\D/g,'');
-      // Si commence par 33, garder
-      if (digits.startsWith('33')) digits = digits;
-      // Si commence par 0, remplacer par 33
-      else if (digits.startsWith('0')) digits = '33' + digits.slice(1);
-      raw = '+' + digits;
-    }
-    // Limiter à +33 + 9 chiffres = 12 chars
-    if (raw.length > 12) raw = raw.slice(0, 12);
+    const raw = normalizeFrenchPhone(this.value);
     this.value = raw;
-    const valid = /^\+33[0-9]{9}$/.test(raw);
+    const valid = isValidFrenchPhone(raw);
     inp.classList.toggle('phone-valid', valid);
-    inp.classList.toggle('phone-invalid', raw.length >= 12 && !valid);
-    const btn = inp.parentNode.querySelector('.sb'); if (btn) btn.disabled = !valid;
+    inp.classList.toggle('phone-invalid', raw.length >= 13 && !valid);
+    const btn = inp.parentNode.querySelector('.sb');
+    if (btn) btn.disabled = !valid;
   });
   // Empêcher de supprimer +33
   inp.addEventListener('keydown', function(e) {
@@ -556,13 +562,20 @@ function showOpts(opts, cb) {
   });
 }
 
-function showInput(ph, cb, isTA=false, validate=null) {
+function showInput(ph, cb, isTA=false, validate=null, capitalize=false) {
   const z = document.getElementById('inp-zone'); z.classList.remove('hidden');
   const hint = document.createElement('div'); hint.className = 'inp-hint'; hint.innerHTML = '<i class="ti ti-corner-down-left"></i> Entr\u00e9e pour continuer';
   const row = document.createElement('div'); row.className = 'inp-row';
   let inp;
   if (isTA) { inp = document.createElement('textarea'); inp.className = 'ci tall'; inp.rows = 3; inp.placeholder = ph; inp.onkeydown = e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sub();} }; }
   else { inp = document.createElement('input'); inp.className = 'ci'; inp.placeholder = ph; inp.onkeydown = e => { if(e.key==='Enter') sub(); }; }
+  if (capitalize) {
+    inp.addEventListener('input', function() {
+      const start = this.selectionStart, end = this.selectionEnd;
+      this.value = capitalizeName(this.value);
+      this.setSelectionRange(start, end);
+    });
+  }
   const btn = document.createElement('button'); btn.className = 'sb'; btn.setAttribute('aria-label','Envoyer'); btn.innerHTML = '<i class="ti ti-arrow-right"></i>';
   const errEl = document.createElement('div'); errEl.style.cssText = 'font-size:11px;color:var(--red);margin-top:2px;display:none';
   const sub = () => {
@@ -583,15 +596,15 @@ function showInput(ph, cb, isTA=false, validate=null) {
 
 function showPhoneInput(cb) {
   const z = document.getElementById('inp-zone'); z.classList.remove('hidden');
-  const hint = document.createElement('div'); hint.className = 'inp-hint'; hint.innerHTML = '<i class="ti ti-phone"></i> Format : +33XXXXXXXXX';
+  const hint = document.createElement('div'); hint.className = 'inp-hint'; hint.innerHTML = '<i class="ti ti-phone"></i> Format : +33 puis 10 chiffres';
   const row = document.createElement('div'); row.className = 'inp-row';
   const inp = document.createElement('input'); inp.className = 'ci'; inp.setAttribute('inputmode','tel');
   applyPhoneMask(inp);
   const btn = document.createElement('button'); btn.className = 'sb'; btn.setAttribute('aria-label','Valider'); btn.innerHTML = '<i class="ti ti-arrow-right"></i>'; btn.disabled = true;
-  const sub = () => { const v = inp.value.trim(); if (!/^\+33[0-9]{9}$/.test(v)) return; clearUI(); cb(v); };
+  const sub = () => { const v = normalizeFrenchPhone(inp.value.trim()); if (!isValidFrenchPhone(v)) return; clearUI(); cb(v); };
   btn.onclick = sub; inp.onkeydown = e => { if(e.key==='Enter') sub(); };
   row.appendChild(inp); row.appendChild(btn);
-  const phoneHint = document.createElement('div'); phoneHint.className = 'phone-hint'; phoneHint.textContent = 'Ex : +33612345678';
+  const phoneHint = document.createElement('div'); phoneHint.className = 'phone-hint'; phoneHint.textContent = 'Ex : +330612345678';
   z.appendChild(hint); z.appendChild(row); z.appendChild(phoneHint);
   setTimeout(() => { inp.focus(); inp.setSelectionRange(3,3); }, 80);
 }
@@ -918,8 +931,8 @@ async function runStep(idx, isBack=false) {
     if (result && result.found) {
       isExistingClient = true;
       // Pré-remplir les données trouvées
-      if (result.nom) D.nom = result.nom;
-      if (result.telephone) D.telephone = result.telephone;
+      if (result.nom) D.nom = capitalizeName(result.nom);
+      if (result.telephone) D.telephone = normalizeFrenchPhone(result.telephone);
       if (result.adresse) D.adresse = result.adresse;
       if (result.code_postal) D.code_postal = result.code_postal;
       if (result.ville) D.ville = result.ville;
@@ -1018,10 +1031,10 @@ async function runStep(idx, isBack=false) {
       await botMsg('Ravie de vous rencontrer ' + D.prenom + ' \ud83d\ude0a', 650);
       setAlexState('idle');
     }
-    runStep(s.next(D)); }, false, s.validate||null); }
+    runStep(s.next(D)); }, false, s.validate||null, !!s.capitalize); }
   else if (s.type === 'date') { const dtype = s.save==='date_permis'?'permis':s.save==='date_naissance'?'naissance':null; showDateInput(async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val); runStep(s.next(D)); }, dtype); }
   else if (s.type === 'immat') { showImmat(async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val); runStep(s.next(D)); }); }
-  else if (s.type === 'phone') { showPhoneInput(async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val); runStep(s.next(D)); }); }
+  else if (s.type === 'phone') { showPhoneInput(async val => { history.push(idx); if(s.save) D[s.save]=normalizeFrenchPhone(val); await userMsg(val); runStep(s.next(D)); }); }
   else if (s.type === 'textarea') { const ph = s.ph_fn ? s.ph_fn(D) : s.ph; showInput(ph, async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val.length>60?val.slice(0,60)+'\u2026':val); runStep(s.next(D)); }, true, 'textarea'); }
   else if (s.type === 'address') { showAddress(async(label,cp,city) => { history.push(idx); D[s.save]=label; if(cp&&s.save_cp)D[s.save_cp]=cp; if(city&&s.save_ville)D[s.save_ville]=city; await userMsg(label); runStep(s.next(D)); }); }
   else if (s.type === 'upload') {
