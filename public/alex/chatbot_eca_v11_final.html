@@ -167,7 +167,9 @@
 let ALEX_DATA = null;
 fetch('./alex-lottie.json').then(r=>r.json()).then(d=>{ALEX_DATA=d;}).catch(()=>{console.warn('Lottie JSON non trouvé, avatar statique');});
 
-const WEBHOOK_URL = 'https://hook.eu1.make.com/ljj5zijhjxavez2kjo7ouhrbcf0liny7';
+// ROLLBACK Make.com : décommenter la ligne ci-dessous et commenter la ligne n8n
+// const WEBHOOK_URL = 'https://hook.eu1.make.com/ljj5zijhjxavez2kjo7ouhrbcf0liny7';
+const WEBHOOK_URL = 'https://n8n.alxor-os.fr/webhook/creation-prospect-alex-web';
 const LOOKUP_URL  = 'https://n8n.alxor-os.fr/webhook/alex-lookup';
 const UPLOADCARE_PUBLIC_KEY = 'a66f066444c9f0f50bfb';
 const UPLOADCARE_CDN_BASE = 'https://3z7o986o1b.ucarecd.net';
@@ -856,7 +858,7 @@ async function sendToMake() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    console.log('\u2705 Payload envoy\u00e9 \u00e0 Make:', payload);
+    console.log('\u2705 Payload envoy\u00e9 \u00e0 n8n:', payload);
   } catch(err) {
     console.error('\u274c Webhook error:', err);
   }
