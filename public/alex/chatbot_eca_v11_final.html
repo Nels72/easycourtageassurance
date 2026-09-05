@@ -44,6 +44,8 @@
     .back-btn{background:none;border:.5px solid var(--bd);border-radius:20px;padding:4px 10px;font-size:11.5px;font-family:'Sora',sans-serif;color:var(--tx2);cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;flex-shrink:0}
     .back-btn:hover{color:var(--tx);border-color:var(--bd2)}
     .back-btn.hidden{visibility:hidden;pointer-events:none}
+    .inline-back-btn{display:block;margin:4px 0 0 auto;background:none;border:none;color:var(--tx2);font-size:10px;font-family:'Sora',sans-serif;cursor:pointer;opacity:0.5;transition:opacity .15s;padding:2px 6px}
+    .inline-back-btn:hover{opacity:1;color:var(--ci)}
     .prog{flex:1;height:2px;background:var(--bg2);border-radius:2px}
     .prog-bar{height:100%;background:var(--ci);border-radius:2px;transition:width .5s ease}
 
@@ -136,6 +138,27 @@
     .phone-hint{font-size:10.5px;color:var(--tx3);margin-top:2px}
     .phone-valid{border-color:var(--green)!important}
     .phone-invalid{border-color:var(--red)!important}
+    .phone-row{display:flex;align-items:stretch;gap:0;border:1.5px solid var(--bd);border-radius:14px;background:var(--bg);overflow:visible;transition:border-color .2s}
+    .phone-row:focus-within{border-color:var(--ci)}
+    .phone-row.phone-valid{border-color:var(--green)}
+    .phone-row.phone-invalid{border-color:var(--red)}
+    .phone-country-btn{display:flex;align-items:center;gap:4px;padding:8px 10px;background:var(--bg);border:none;border-right:1px solid var(--bd);cursor:pointer;font-size:13px;color:var(--tx);white-space:nowrap;border-radius:14px 0 0 14px}
+    .phone-country-btn:hover{background:rgba(0,0,0,.03)}
+    .phone-country-btn .chevron{font-size:10px;color:var(--tx3);transition:transform .2s}
+    .phone-country-btn.open .chevron{transform:rotate(180deg)}
+    .phone-nat{flex:1;border:none;outline:none;padding:8px 10px;font-size:14px;font-family:inherit;color:var(--tx);background:transparent;border-radius:0 14px 14px 0}
+    .phone-nat::placeholder{color:var(--tx3)}
+    .phone-dd{position:absolute;left:0;top:100%;margin-top:4px;width:280px;max-height:240px;background:#fff;border:1px solid var(--bd);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:999;overflow:hidden;display:none}
+    .phone-dd.open{display:block}
+    .phone-dd-search{width:100%;padding:8px 10px;border:none;border-bottom:1px solid var(--bd);font-size:13px;font-family:inherit;outline:none;color:var(--tx)}
+    .phone-dd-search::placeholder{color:var(--tx3)}
+    .phone-dd-list{max-height:196px;overflow-y:auto}
+    .phone-dd-item{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;font-size:13px;color:var(--tx);border:none;background:none;width:100%;text-align:left}
+    .phone-dd-item:hover,.phone-dd-item.hl{background:rgba(79,124,255,.08)}
+    .phone-dd-item.sel{font-weight:700}
+    .phone-dd-item .dd-flag{width:22px;text-align:center}
+    .phone-dd-item .dd-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .phone-dd-item .dd-code{font-size:11px;color:var(--tx3);font-family:monospace}
   </style>
 </head>
 <body>
@@ -415,11 +438,28 @@ function showTyping(delay=0) {
   }, delay); });
 }
 
-async function userMsg(txt) {
+async function userMsg(txt, stepIdx) {
   const ti = document.getElementById('typ'); if (ti) ti.remove();
   const m = document.getElementById('msgs'), el = document.createElement('div');
-  el.className = 'msg user'; el.innerHTML = '<div class="bub">' + txt + '</div>';
+  el.className = 'msg user';
+  if (stepIdx !== undefined) el.setAttribute('data-step-idx', stepIdx);
+  el.innerHTML = '<div class="bub">' + txt + '</div>';
+  if (stepIdx !== undefined) {
+    const ib = document.createElement('button');
+    ib.className = 'inline-back-btn';
+    ib.innerHTML = '&larr; Modifier';
+    ib.onclick = () => goBackTo(stepIdx);
+    el.appendChild(ib);
+  }
   m.appendChild(el); m.scrollTop = m.scrollHeight;
+}
+
+function scrollToUI() {
+  setTimeout(() => {
+    const botMsgs = document.querySelectorAll('.bot');
+    const lastBot = botMsgs[botMsgs.length - 1];
+    if (lastBot) lastBot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 120);
 }
 
 function clearUI() {
@@ -452,6 +492,30 @@ document.getElementById('back-btn').onclick = () => {
   clearUI(); runStep(prev, true);
 };
 
+function goBackTo(targetIdx) {
+  const m = document.getElementById('msgs');
+  const targetMsg = m.querySelector('.msg.user[data-step-idx="' + targetIdx + '"]');
+  if (!targetMsg) return;
+  while (targetMsg.nextSibling) targetMsg.nextSibling.remove();
+  let prev = targetMsg.previousSibling;
+  while (prev && !(prev.classList && prev.classList.contains('user'))) {
+    const toRm = prev; prev = prev.previousSibling; toRm.remove();
+  }
+  targetMsg.remove();
+  const hIdx = history.lastIndexOf(targetIdx);
+  if (hIdx !== -1) {
+    const removed = history.splice(hIdx);
+    removed.forEach(si => {
+      const s = S[si];
+      if (s && s.save) delete D[s.save];
+      if (s && s.save_url) delete D[s.save_url];
+      if (s && s.save_cp) delete D[s.save_cp];
+      if (s && s.save_ville) delete D[s.save_ville];
+    });
+  }
+  clearUI(); runStep(targetIdx, true);
+}
+
 /* ── Masks ── */
 function applyDateMask(inp) {
   inp.setAttribute('maxlength','10'); inp.setAttribute('inputmode','numeric');
@@ -481,42 +545,97 @@ function applyImmatMask(inp) {
   });
 }
 
-/* ── Phone mask : format +33XXXXXXXXX ── */
-function applyPhoneMask(inp) {
-  inp.setAttribute('maxlength','12'); inp.setAttribute('inputmode','tel');
-  inp.value = '+33';
-  inp.addEventListener('input', function() {
-    let raw = this.value.replace(/[^\d+]/g,'');
-    // Si l'utilisateur efface le +33
-    if (!raw.startsWith('+33')) {
-      // Essayer de récupérer les chiffres
-      let digits = raw.replace(/\D/g,'');
-      // Si commence par 33, garder
-      if (digits.startsWith('33')) digits = digits;
-      // Si commence par 0, remplacer par 33
-      else if (digits.startsWith('0')) digits = '33' + digits.slice(1);
-      raw = '+' + digits;
-    }
-    // Limiter à +33 + 9 chiffres = 12 chars
-    if (raw.length > 12) raw = raw.slice(0, 12);
-    this.value = raw;
-    const valid = /^\+33[0-9]{9}$/.test(raw);
-    inp.classList.toggle('phone-valid', valid);
-    inp.classList.toggle('phone-invalid', raw.length >= 12 && !valid);
-    const btn = inp.parentNode.querySelector('.sb'); if (btn) btn.disabled = !valid;
-  });
-  // Empêcher de supprimer +33
-  inp.addEventListener('keydown', function(e) {
-    if ((e.key === 'Backspace' || e.key === 'Delete') && this.selectionStart <= 3) {
-      e.preventDefault();
-    }
-  });
-  inp.addEventListener('focus', function() {
-    if (this.selectionStart < 3) this.setSelectionRange(3, 3);
-  });
-  inp.addEventListener('click', function() {
-    if (this.selectionStart < 3) this.setSelectionRange(3, 3);
-  });
+/* ── Téléphone international ── */
+const COUNTRY_LIST = [
+  {code:'FR',dial:'+33',name:'France',max:9,trunk:'0'},
+  {code:'BE',dial:'+32',name:'Belgique',max:9,trunk:'0'},
+  {code:'CH',dial:'+41',name:'Suisse',max:9,trunk:'0'},
+  {code:'LU',dial:'+352',name:'Luxembourg',max:9},
+  {code:'MC',dial:'+377',name:'Monaco',max:8},
+  {code:'DE',dial:'+49',name:'Allemagne',max:12,trunk:'0'},
+  {code:'ES',dial:'+34',name:'Espagne',max:9},
+  {code:'IT',dial:'+39',name:'Italie',max:12},
+  {code:'GB',dial:'+44',name:'Royaume-Uni',max:10,trunk:'0'},
+  {code:'PT',dial:'+351',name:'Portugal',max:9},
+  {code:'NL',dial:'+31',name:'Pays-Bas',max:9,trunk:'0'},
+  {code:'AT',dial:'+43',name:'Autriche',max:12,trunk:'0'},
+  {code:'DK',dial:'+45',name:'Danemark',max:8},
+  {code:'FI',dial:'+358',name:'Finlande',max:10},
+  {code:'GR',dial:'+30',name:'Grece',max:10},
+  {code:'HU',dial:'+36',name:'Hongrie',max:9,trunk:'0'},
+  {code:'IE',dial:'+353',name:'Irlande',max:9,trunk:'0'},
+  {code:'NO',dial:'+47',name:'Norvege',max:8},
+  {code:'PL',dial:'+48',name:'Pologne',max:9},
+  {code:'RO',dial:'+40',name:'Roumanie',max:9,trunk:'0'},
+  {code:'SE',dial:'+46',name:'Suede',max:9,trunk:'0'},
+  {code:'CZ',dial:'+420',name:'Republique tcheque',max:9},
+  {code:'SK',dial:'+421',name:'Slovaquie',max:9},
+  {code:'HR',dial:'+385',name:'Croatie',max:9,trunk:'0'},
+  {code:'BG',dial:'+359',name:'Bulgarie',max:9,trunk:'0'},
+  {code:'SI',dial:'+386',name:'Slovenie',max:8,trunk:'0'},
+  {code:'EE',dial:'+372',name:'Estonie',max:8},
+  {code:'LV',dial:'+371',name:'Lettonie',max:8},
+  {code:'LT',dial:'+370',name:'Lituanie',max:8,trunk:'0'},
+  {code:'MT',dial:'+356',name:'Malte',max:8},
+  {code:'CY',dial:'+357',name:'Chypre',max:8},
+  {code:'IS',dial:'+354',name:'Islande',max:7},
+  {code:'US',dial:'+1',name:'Etats-Unis',max:10},
+  {code:'CA',dial:'+1',name:'Canada',max:10},
+  {code:'MA',dial:'+212',name:'Maroc',max:9,trunk:'0'},
+  {code:'DZ',dial:'+213',name:'Algerie',max:9,trunk:'0'},
+  {code:'TN',dial:'+216',name:'Tunisie',max:8},
+  {code:'SN',dial:'+221',name:'Senegal',max:9},
+  {code:'CI',dial:'+225',name:"Cote d'Ivoire",max:10},
+  {code:'CM',dial:'+237',name:'Cameroun',max:9},
+  {code:'GA',dial:'+241',name:'Gabon',max:8},
+  {code:'CG',dial:'+242',name:'Congo',max:9},
+  {code:'MG',dial:'+261',name:'Madagascar',max:9,trunk:'0'},
+  {code:'MU',dial:'+230',name:'Maurice',max:8},
+  {code:'RE',dial:'+262',name:'La Reunion',max:9,trunk:'0'},
+  {code:'GP',dial:'+590',name:'Guadeloupe',max:9,trunk:'0'},
+  {code:'MQ',dial:'+596',name:'Martinique',max:9,trunk:'0'},
+  {code:'GF',dial:'+594',name:'Guyane',max:9,trunk:'0'},
+  {code:'YT',dial:'+262',name:'Mayotte',max:9,trunk:'0'},
+  {code:'NC',dial:'+687',name:'Nouvelle-Caledonie',max:6},
+  {code:'PF',dial:'+689',name:'Polynesie francaise',max:6},
+  {code:'TR',dial:'+90',name:'Turquie',max:10,trunk:'0'},
+  {code:'BR',dial:'+55',name:'Bresil',max:11}
+];
+const SORTED_DIAL = [...COUNTRY_LIST].sort((a,b) => b.dial.length - a.dial.length);
+function isoToFlag(code) { return String.fromCodePoint(...code.toUpperCase().split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65)); }
+COUNTRY_LIST.forEach(c => { c.flag = isoToFlag(c.code); });
+
+function parsePhoneE164(value) {
+  if (!value) return { country: COUNTRY_LIST[0], nat: '' };
+  const cleaned = value.replace(/[\s.\-()]/g, '');
+  if (cleaned.startsWith('+')) {
+    const digits = cleaned.slice(1).replace(/\D/g, '');
+    for (const c of SORTED_DIAL) { const cd = c.dial.slice(1); if (digits.startsWith(cd)) return { country: c, nat: digits.slice(cd.length) }; }
+    return { country: COUNTRY_LIST[0], nat: digits };
+  }
+  if (cleaned.startsWith('00')) {
+    const digits = cleaned.slice(2).replace(/\D/g, '');
+    for (const c of SORTED_DIAL) { const cd = c.dial.slice(1); if (digits.startsWith(cd)) return { country: c, nat: digits.slice(cd.length) }; }
+  }
+  if (cleaned.startsWith('0')) return { country: COUNTRY_LIST[0], nat: cleaned.replace(/\D/g, '').slice(1) };
+  return { country: COUNTRY_LIST[0], nat: cleaned.replace(/\D/g, '') };
+}
+function formatPhoneE164(nat, country) {
+  let d = nat.replace(/\D/g, '');
+  if (!d) return '';
+  if (country.trunk && d.startsWith(country.trunk)) d = d.slice(country.trunk.length);
+  return country.dial + d;
+}
+function isValidIntlPhone(nat, country) {
+  let d = nat.replace(/\D/g, '');
+  if (country.trunk && d.startsWith(country.trunk)) d = d.slice(country.trunk.length);
+  if (!d) return false;
+  return d.length >= Math.max(1, country.max - 3) && d.length <= country.max;
+}
+function filterCountriesList(q) {
+  if (!q.trim()) return COUNTRY_LIST;
+  const n = q.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return COUNTRY_LIST.filter(c => c.name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(n) || c.dial.includes(n) || c.code.toLowerCase().includes(n));
 }
 
 /* ── Address autocomplete ── */
@@ -599,17 +718,87 @@ function showInput(ph, cb, isTA=false, validate=null) {
 
 function showPhoneInput(cb) {
   const z = document.getElementById('inp-zone'); z.classList.remove('hidden');
-  const hint = document.createElement('div'); hint.className = 'inp-hint'; hint.innerHTML = '<i class="ti ti-phone"></i> Format : +33XXXXXXXXX';
-  const row = document.createElement('div'); row.className = 'inp-row';
-  const inp = document.createElement('input'); inp.className = 'ci'; inp.setAttribute('inputmode','tel');
-  applyPhoneMask(inp);
-  const btn = document.createElement('button'); btn.className = 'sb'; btn.setAttribute('aria-label','Valider'); btn.innerHTML = '<i class="ti ti-arrow-right"></i>'; btn.disabled = true;
-  const sub = () => { const v = inp.value.trim(); if (!/^\+33[0-9]{9}$/.test(v)) return; clearUI(); cb(v); };
-  btn.onclick = sub; inp.onkeydown = e => { if(e.key==='Enter') sub(); };
-  row.appendChild(inp); row.appendChild(btn);
-  const phoneHint = document.createElement('div'); phoneHint.className = 'phone-hint'; phoneHint.textContent = 'Ex : +33612345678';
-  z.appendChild(hint); z.appendChild(row); z.appendChild(phoneHint);
-  setTimeout(() => { inp.focus(); inp.setSelectionRange(3,3); }, 80);
+  const hint = document.createElement('div'); hint.className = 'inp-hint'; hint.innerHTML = '<i class="ti ti-phone"></i> Indicatif + numero national';
+  let selCountry = COUNTRY_LIST[0];
+  let hlIdx = 0;
+
+  const wrapper = document.createElement('div'); wrapper.style.position = 'relative';
+  const phoneRow = document.createElement('div'); phoneRow.className = 'phone-row';
+
+  const countryBtn = document.createElement('button'); countryBtn.type = 'button'; countryBtn.className = 'phone-country-btn';
+  function updateBtn() { countryBtn.innerHTML = '<span>' + selCountry.flag + '</span> <span>' + selCountry.dial + '</span> <span class="chevron">▼</span>'; }
+  updateBtn();
+
+  const natInp = document.createElement('input'); natInp.className = 'phone-nat'; natInp.setAttribute('inputmode','tel'); natInp.placeholder = '6 12 34 56 78';
+
+  const dd = document.createElement('div'); dd.className = 'phone-dd';
+  const ddSearch = document.createElement('input'); ddSearch.className = 'phone-dd-search'; ddSearch.placeholder = 'Rechercher un pays...';
+  const ddList = document.createElement('div'); ddList.className = 'phone-dd-list';
+  dd.appendChild(ddSearch); dd.appendChild(ddList);
+
+  const subBtn = document.createElement('button'); subBtn.className = 'sb'; subBtn.setAttribute('aria-label','Valider'); subBtn.innerHTML = '<i class="ti ti-arrow-right"></i>'; subBtn.disabled = true;
+
+  function renderList(q) {
+    ddList.innerHTML = ''; hlIdx = 0;
+    const filtered = filterCountriesList(q || '');
+    if (!filtered.length) { ddList.innerHTML = '<div style="padding:8px 10px;font-size:12px;color:var(--tx3)">Aucun resultat</div>'; return; }
+    filtered.forEach((c, i) => {
+      const item = document.createElement('button'); item.type = 'button'; item.className = 'phone-dd-item';
+      if (c.code === selCountry.code && c.dial === selCountry.dial) item.classList.add('sel');
+      if (i === hlIdx) item.classList.add('hl');
+      item.innerHTML = '<span class="dd-flag">' + c.flag + '</span><span class="dd-name">' + c.name + '</span><span class="dd-code">' + c.dial + '</span>';
+      item.onclick = () => { selCountry = c; updateBtn(); closeDd(); updateValidity(); natInp.focus(); };
+      ddList.appendChild(item);
+    });
+  }
+
+  function openDd() { dd.classList.add('open'); countryBtn.classList.add('open'); ddSearch.value = ''; renderList(''); attachCloseHandler(); setTimeout(() => ddSearch.focus(), 30); }
+  function closeDd() { dd.classList.remove('open'); countryBtn.classList.remove('open'); detachCloseHandler(); }
+  function toggleDd() { dd.classList.contains('open') ? closeDd() : openDd(); }
+
+  countryBtn.onclick = toggleDd;
+  ddSearch.addEventListener('input', () => { renderList(ddSearch.value); });
+  ddSearch.addEventListener('keydown', (e) => {
+    const items = ddList.querySelectorAll('.phone-dd-item');
+    if (e.key === 'ArrowDown') { e.preventDefault(); hlIdx = Math.min(hlIdx + 1, items.length - 1); items.forEach((it,i) => it.classList.toggle('hl', i===hlIdx)); items[hlIdx]?.scrollIntoView({block:'nearest'}); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); hlIdx = Math.max(hlIdx - 1, 0); items.forEach((it,i) => it.classList.toggle('hl', i===hlIdx)); items[hlIdx]?.scrollIntoView({block:'nearest'}); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (items[hlIdx]) items[hlIdx].click(); }
+    else if (e.key === 'Escape') { closeDd(); natInp.focus(); }
+  });
+
+  let _closePhoneHandler = null;
+  function attachCloseHandler() {
+    if (_closePhoneHandler) return;
+    _closePhoneHandler = function(e) { if (!wrapper.contains(e.target)) { closeDd(); } };
+    setTimeout(() => document.addEventListener('mousedown', _closePhoneHandler), 0);
+  }
+  function detachCloseHandler() {
+    if (_closePhoneHandler) { document.removeEventListener('mousedown', _closePhoneHandler); _closePhoneHandler = null; }
+  }
+
+  function updateValidity() {
+    const d = natInp.value.replace(/\D/g, '');
+    const valid = isValidIntlPhone(natInp.value, selCountry);
+    phoneRow.classList.toggle('phone-valid', valid);
+    phoneRow.classList.toggle('phone-invalid', d.length >= selCountry.max && !valid);
+    subBtn.disabled = !valid;
+  }
+  natInp.addEventListener('input', () => {
+    let d = natInp.value.replace(/\D/g, '');
+    if (d.length > selCountry.max) { d = d.slice(0, selCountry.max); natInp.value = d; }
+    updateValidity();
+  });
+
+  const sub = () => { if (!isValidIntlPhone(natInp.value, selCountry)) return; clearUI(); cb(formatPhoneE164(natInp.value, selCountry)); };
+  subBtn.onclick = sub;
+  natInp.onkeydown = e => { if (e.key === 'Enter') sub(); };
+
+  phoneRow.appendChild(countryBtn); phoneRow.appendChild(natInp);
+  wrapper.appendChild(phoneRow); wrapper.appendChild(dd);
+  const submitRow = document.createElement('div'); submitRow.className = 'inp-row'; submitRow.style.justifyContent = 'flex-end'; submitRow.appendChild(subBtn);
+  const phoneHint = document.createElement('div'); phoneHint.className = 'phone-hint'; phoneHint.textContent = 'France +33 par defaut — cliquez pour changer';
+  z.appendChild(hint); z.appendChild(wrapper); z.appendChild(submitRow); z.appendChild(phoneHint);
+  setTimeout(() => { natInp.focus(); }, 80);
 }
 
 function showDateInput(cb, dateType) {
@@ -969,7 +1158,7 @@ async function runStep(idx, isBack=false) {
       setAlexState('idle');
       showOpts(['R\u00e9essayer','Continuer comme nouveau client'], async choice => {
         history.push(idx);
-        await userMsg(choice);
+        await userMsg(choice, idx);
         if (choice === 'R\u00e9essayer') {
           runStep(s.next_not_found(D));
         } else {
@@ -1023,7 +1212,7 @@ async function runStep(idx, isBack=false) {
   await botMsg(bt, isBack ? 0 : 650);
   setAlexState('idle');
 
-  if (s.type === 'opts') { showOpts(gv(s.opts), async choice => { history.push(idx); if(s.save) D[s.save]=choice; await userMsg(choice);
+  if (s.type === 'opts') { showOpts(gv(s.opts), async choice => { history.push(idx); if(s.save) D[s.save]=choice; await userMsg(choice, idx);
     // Message de réassurance si "Non" à assuré 36 mois
     if (s.id === 'assure' && choice === 'Non') {
       setAlexState('thinking'); await showTyping(200);
@@ -1037,7 +1226,7 @@ async function runStep(idx, isBack=false) {
     if (s.capitalize) val = capitalizeName(val);
     if (s.lowercase) val = val.toLowerCase().trim();
     if(s.save) D[s.save]=val;
-    await userMsg(val);
+    await userMsg(val, idx);
     // Politesse après prénom_early
     if (s.id === 'prenom_early') {
       setAlexState('thinking'); await showTyping(200);
@@ -1045,18 +1234,18 @@ async function runStep(idx, isBack=false) {
       setAlexState('idle');
     }
     runStep(s.next(D)); }, false, s.validate||null); }
-  else if (s.type === 'date') { const dtype = s.save==='date_permis'?'permis':s.save==='date_naissance'?'naissance':null; showDateInput(async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val); runStep(s.next(D)); }, dtype); }
-  else if (s.type === 'immat') { showImmat(async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val); runStep(s.next(D)); }); }
-  else if (s.type === 'phone') { showPhoneInput(async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val); runStep(s.next(D)); }); }
-  else if (s.type === 'textarea') { const ph = s.ph_fn ? s.ph_fn(D) : s.ph; showInput(ph, async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val.length>60?val.slice(0,60)+'\u2026':val); runStep(s.next(D)); }, true, 'textarea'); }
-  else if (s.type === 'address') { showAddress(async(label,cp,city) => { history.push(idx); D[s.save]=label; if(cp&&s.save_cp)D[s.save_cp]=cp; if(city&&s.save_ville)D[s.save_ville]=city; await userMsg(label); runStep(s.next(D)); }); }
+  else if (s.type === 'date') { const dtype = s.save==='date_permis'?'permis':s.save==='date_naissance'?'naissance':null; showDateInput(async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val, idx); runStep(s.next(D)); }, dtype); }
+  else if (s.type === 'immat') { showImmat(async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val, idx); runStep(s.next(D)); }); }
+  else if (s.type === 'phone') { showPhoneInput(async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val, idx); runStep(s.next(D)); }); }
+  else if (s.type === 'textarea') { const ph = s.ph_fn ? s.ph_fn(D) : s.ph; showInput(ph, async val => { history.push(idx); if(s.save) D[s.save]=val; await userMsg(val.length>60?val.slice(0,60)+'\u2026':val, idx); runStep(s.next(D)); }, true, 'textarea'); }
+  else if (s.type === 'address') { showAddress(async(label,cp,city) => { history.push(idx); D[s.save]=label; if(cp&&s.save_cp)D[s.save_cp]=cp; if(city&&s.save_ville)D[s.save_ville]=city; await userMsg(label, idx); runStep(s.next(D)); }); }
   else if (s.type === 'upload') {
     const level = s.level_fn ? s.level_fn(D) : (s.level || null);
     const skipText = s.skipText_fn ? s.skipText_fn(D) : (s.skipText || null);
     showUpload(s.accept, s.save, s.save_url, s.optional, async(fname, url) => {
       history.push(idx);
-      if (fname !== '(non fourni)') await userMsg('\ud83d\udcce ' + fname + (url ? ' \u2713' : ''));
-      else await userMsg('Passer cette \u00e9tape');
+      if (fname !== '(non fourni)') await userMsg('\ud83d\udcce ' + fname + (url ? ' \u2713' : ''), idx);
+      else await userMsg('Passer cette \u00e9tape', idx);
       runStep(s.next(D));
     }, level, skipText);
   }
@@ -1065,9 +1254,9 @@ async function runStep(idx, isBack=false) {
       history.push(idx);
       if (names !== '(non fourni)') {
         const count = names.split(',').length;
-        await userMsg('\ud83d\udcce ' + count + ' fichier(s) d\u00e9pos\u00e9(s) \u2713');
+        await userMsg('\ud83d\udcce ' + count + ' fichier(s) d\u00e9pos\u00e9(s) \u2713', idx);
       } else {
-        await userMsg('Passer cette \u00e9tape');
+        await userMsg('Passer cette \u00e9tape', idx);
       }
       runStep(s.next(D));
     });
