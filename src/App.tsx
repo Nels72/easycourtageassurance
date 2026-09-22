@@ -23,8 +23,12 @@ import {
   Gauge,
   Lock,
   PhoneCall,
-  MessageCircle
+  MessageCircle,
+  CircleUserRound
 } from 'lucide-react';
+
+// Espace client du cabinet sur Alxor OS (connexion par lien envoyé par e-mail).
+const ESPACE_CLIENT_URL = 'https://alxor-os.netlify.app/espace-client/EAS-Y8LtQ';
 import { motion } from 'motion/react';
 
 function loadGoogleAnalytics() {
@@ -154,6 +158,13 @@ const Navbar = () => (
           <a href="#pourquoi" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Pourquoi Nous</a>
           <a href="#agences" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Notre Agence</a>
         </div>
+        <a
+          href={ESPACE_CLIENT_URL}
+          className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90 transition-opacity"
+        >
+          <CircleUserRound className="w-4 h-4" />
+          Espace client
+        </a>
       </div>
     </div>
   </nav>
@@ -641,6 +652,10 @@ const AgenciesAndContact = ({ onOpenMaps, onOpenAlex }: { onOpenMaps: () => void
             <div className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-accent" />
               <a href="mailto:easy@easycourtage.fr" className="hover:text-white transition-colors">easy@easycourtage.fr</a>
+            </div>
+            <div className="flex items-center gap-3">
+              <CircleUserRound className="w-5 h-5 text-accent" />
+              <a href={ESPACE_CLIENT_URL} className="hover:text-white transition-colors">Espace client</a>
             </div>
             <div className="flex items-center gap-3">
               <Clock className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
