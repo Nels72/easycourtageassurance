@@ -67,6 +67,7 @@
     .opt{padding:7px 14px;border-radius:20px;border:.5px solid var(--bd);background:var(--bg);color:var(--tx);font-size:12.5px;font-family:'Sora',sans-serif;cursor:pointer;transition:all .12s}
     .opt:hover{background:var(--bg2)}
     .opt.sel{background:var(--ci);color:var(--ci-text);border-color:transparent;font-weight:500}
+    .cat-sel{width:100%;padding:9px 12px;border-radius:14px;border:.5px solid var(--bd);background:var(--bg);color:var(--tx);font-size:13px;font-family:'Sora',sans-serif;margin-bottom:8px;outline:none}
 
     /* ── Inputs ── */
     .inp-wrap{display:flex;flex-direction:column;gap:6px;padding:0 0 .5rem 36px}
@@ -312,6 +313,83 @@ const DOCS_SPECIFIQUES = {
   'Cyber Risque': 'Bilan IT, contrat cyber existant'
 };
 
+/* CATALOGUE-TYPES:DEBUT \u2014 g\u00e9n\u00e9r\u00e9 par ops/scripts/alex/generer-catalogue-chatbots.mjs depuis lib/typesContrat.ts ; ne pas modifier \u00e0 la main */
+const CATALOGUE_TYPES = [
+  {c:'AUT',l:'Auto',f:'mobilite'},
+  {c:'MOT',l:'Moto',f:'mobilite'},
+  {c:'CYCLO',l:'Cyclo',f:'mobilite'},
+  {c:'FLO_AUT',l:'Flotte Auto',f:'mobilite'},
+  {c:'VUL',l:'Utilitaire / V\u00e9hicule pro',f:'mobilite'},
+  {c:'CAMPING',l:'Camping-car / Caravane / Remorque',f:'mobilite'},
+  {c:'EDPM',l:'Trottinette / Engin \u00e9lectrique',f:'mobilite'},
+  {c:'AUTO_MISSION',l:'Auto-mission',f:'mobilite'},
+  {c:'GARAGE',l:'Garagiste / N\u00e9gociant auto',f:'mobilite'},
+  {c:'PLAISANCE',l:'Bateau / Jet Ski',f:'mobilite'},
+  {c:'AERIEN',l:'Aviation de loisir / Drone',f:'mobilite'},
+  {c:'MRH',l:'Habitation',f:'habitation'},
+  {c:'PNO',l:'Propri\u00e9taire Non Occupant',f:'habitation'},
+  {c:'MRI',l:'Immeuble / Copropri\u00e9t\u00e9',f:'habitation'},
+  {c:'GLI',l:'Loyers impay\u00e9s',f:'habitation'},
+  {c:'OBJ_VALEUR',l:'Objets de valeur / Art',f:'habitation'},
+  {c:'NOMADE',l:'Appareils nomades',f:'habitation'},
+  {c:'RCVP',l:'RC vie priv\u00e9e',f:'habitation'},
+  {c:'CHASSE',l:'RC chasse',f:'habitation'},
+  {c:'MRP',l:'MRP Multirisques Pro',f:'professionnel'},
+  {c:'MRIND',l:'Multirisque industrielle',f:'professionnel'},
+  {c:'RCPRO',l:'RC Professionnelle',f:'professionnel'},
+  {c:'RCE',l:'RC Entreprise',f:'professionnel'},
+  {c:'RCMED',l:'RC m\u00e9dicale',f:'professionnel'},
+  {c:'RCINTERM',l:'RC interm\u00e9diaires / CIF',f:'professionnel'},
+  {c:'RCMS',l:'RC des dirigeants',f:'professionnel'},
+  {c:'PE',l:'Pertes d\u2019exploitation',f:'professionnel'},
+  {c:'BDM',l:'Bris de machine / Informatique',f:'professionnel'},
+  {c:'CYBER',l:'Cyber Risque',f:'professionnel'},
+  {c:'MARCH',l:'Marchandises transport\u00e9es',f:'professionnel'},
+  {c:'RCTRANSP',l:'RC transporteur',f:'professionnel'},
+  {c:'CREDIT',l:'Assurance-cr\u00e9dit',f:'professionnel'},
+  {c:'CAUTION',l:'Caution / Garanties financi\u00e8res',f:'professionnel'},
+  {c:'AGRI',l:'Multirisque agricole',f:'professionnel'},
+  {c:'FRAUDE',l:'Fraude / D\u00e9tournement',f:'professionnel'},
+  {c:'RCD',l:'RC D\u00e9cennale',f:'construction'},
+  {c:'DO',l:'Dommages-ouvrage',f:'construction'},
+  {c:'CNR',l:'Constructeur non r\u00e9alisateur',f:'construction'},
+  {c:'TRC',l:'Tous risques chantier',f:'construction'},
+  {c:'GAR_CMI',l:'Garantie de livraison CMI',f:'construction'},
+  {c:'SNT',l:'Mutuelle Sant\u00e9',f:'personnes'},
+  {c:'SANTE_INTER',l:'Sant\u00e9 internationale / Expatri\u00e9s',f:'personnes'},
+  {c:'COLL',l:'Sant\u00e9 / Pr\u00e9voyance Coll.',f:'personnes'},
+  {c:'PREV_IND',l:'Pr\u00e9voyance individuelle',f:'personnes'},
+  {c:'HOMME_CLE',l:'Homme-cl\u00e9',f:'personnes'},
+  {c:'TEMP_DECES',l:'Temporaire d\u00e9c\u00e8s',f:'personnes'},
+  {c:'RENTE_EDUC',l:'Rente \u00e9ducation / conjoint',f:'personnes'},
+  {c:'GAV',l:'Garantie des accidents de la vie',f:'personnes'},
+  {c:'DEPENDANCE',l:'D\u00e9pendance',f:'personnes'},
+  {c:'OBSEQUES',l:'Obs\u00e8ques',f:'personnes'},
+  {c:'EMPRUNTEUR',l:'Assurance Emprunteur',f:'personnes'},
+  {c:'VIE',l:'Assurance vie',f:'epargne',ibip:1},
+  {c:'CAPI',l:'Contrat de capitalisation',f:'epargne',ibip:1},
+  {c:'PER',l:'PER individuel',f:'epargne',ibip:1},
+  {c:'RETRAITE_COL',l:'Retraite collective (PERO, art. 39)',f:'epargne',ibip:1},
+  {c:'PJ',l:'Protection Juridique',f:'divers'},
+  {c:'SCO',l:'Scolaire et extra-scolaire',f:'divers'},
+  {c:'VOYAGE',l:'Assistance / Annulation voyage',f:'divers'},
+  {c:'ANIMAUX',l:'Animaux de compagnie',f:'divers'}
+];
+const FAMILLES_TYPES = [['mobilite','Auto et mobilit\u00e9'],['habitation','Habitation et biens'],['professionnel','Professionnels et entreprises'],['construction','Construction'],['personnes','Sant\u00e9 et pr\u00e9voyance'],['epargne','Vie, \u00e9pargne et retraite (IBIP)'],['divers','Divers']];
+/* CATALOGUE-TYPES:FIN */
+
+/* ── « Autre contrat » : tout le catalogue des types de contrat (2026-09-30) ── */
+const AUTRE_CONTRAT = 'Autre contrat';
+const AUTRE_BESOIN = 'Autre besoin (\u00e0 pr\u00e9ciser)';
+/* Libellés des boutons produit → code du catalogue : ces types ne sont pas répétés dans la liste. */
+const BOUTON_VERS_CODE = {'Auto':'AUT','Moto':'MOT','Cycle':'CYCLO','Flotte Auto':'FLO_AUT','Habitation':'MRH','Mutuelle Sant\u00e9':'SNT','Local Professionnel':'MRP','RC Professionnelle':'RCPRO','RC D\u00e9cennale':'RCD','Sant\u00e9 & Pr\u00e9voyance Collective':'COLL','Cyber Risque':'CYBER','RC Entreprise':'RCE'};
+function produitsProposes(d) {
+  return d.profil==='Particulier'?['Auto','Habitation','Moto','Mutuelle Sant\u00e9','Cyber Risque','Cycle']:
+         d.profil==='Professionnel'?['Local Professionnel','RC Professionnelle','Flotte Auto','Mutuelle Sant\u00e9','Sant\u00e9 & Pr\u00e9voyance Collective']:
+         ['RC D\u00e9cennale','Flotte Auto','Sant\u00e9 & Pr\u00e9voyance Collective','Cyber Risque','RC Entreprise'];
+}
+function indexEtape(id) { return S.findIndex(x => x.id === id); }
+
 /* ── Steps ── */
 const S = [
   // 0 - Accueil
@@ -328,10 +406,10 @@ const S = [
   {id:'profil', bot:d=>'Parfait '+d.prenom+'. Pour commencer, vous faites cette demande en tant que... ?', type:'opts', opts:['Particulier','Professionnel','Entreprise'], save:'profil', next:()=>6},
   // 6 - Produit
   {id:'produit', bot:"Quel type de couverture vous am\u00e8ne aujourd\u2019hui ?", type:'opts',
-    opts:d=>d.profil==='Particulier'?['Auto','Habitation','Moto','Mutuelle Sant\u00e9','Cyber Risque','Cycle']:
-         d.profil==='Professionnel'?['Local Professionnel','RC Professionnelle','Flotte Auto','Mutuelle Sant\u00e9','Sant\u00e9 & Pr\u00e9voyance Collective']:
-         ['RC D\u00e9cennale','Flotte Auto','Sant\u00e9 & Pr\u00e9voyance Collective','Cyber Risque','RC Entreprise'],
+    opts:d=>[...produitsProposes(d), AUTRE_CONTRAT],
     save:'produit', next:d=>{
+      if(d.produit===AUTRE_CONTRAT) return indexEtape('autre_contrat');
+      delete D.type_contrat;
       if(['Auto','Moto','Cycle'].includes(d.produit)) return 7; // permis
       if(d.produit==='Flotte Auto') return 10; // assuré 36 mois
       if(d.produit==='RC D\u00e9cennale') return 24; // RCD spécifique
@@ -397,7 +475,7 @@ const S = [
   // 22 - Date de naissance
   {id:'ddn', bot:"Votre date de naissance ? (n\u00e9cessaire pour \u00e9tablir le devis)", type:'date', save:'date_naissance', next:d=>['Professionnel','Entreprise'].includes(d.profil)?23:25},
   // 23 - SIRET
-  {id:'siret', bot:"Le num\u00e9ro SIRET de votre structure ?", type:'input', ph:'Ex : 123 456 789 00012', save:'siret', next:()=>25},
+  {id:'siret', bot:"Le num\u00e9ro SIRET de votre structure ?", type:'input', ph:'Ex : 123 456 789 00012', save:'siret', validate:'siret', next:()=>25},
   // 24 - RC Décennale spécifique : déjà assuré ?
   {id:'rcd_assure', bot:"Avez-vous d\u00e9j\u00e0 \u00e9t\u00e9 assur\u00e9 en RC D\u00e9cennale ?", type:'opts', opts:['Oui','Non'], save:'rcd_deja_assure', next:()=>12},
   // 25 - Préférence contact
@@ -405,10 +483,18 @@ const S = [
   // 26 - Recap
   {id:'recap', type:'recap', next:()=>27},
   // 27 - Done
-  {id:'done', type:'done'}
+  {id:'done', type:'done'},
+  // 28 - « Autre contrat » : liste du catalogue (hors boutons), puis la même suite que le type choisi
+  {id:'autre_contrat', bot:"Quel contrat recherchez-vous ?", type:'catalogue', progIdx:6, next:d=>{
+    const c = d.type_contrat;
+    if(['AUT','MOT','CYCLO'].includes(c)) return 7;
+    if(c==='FLO_AUT') return 10;
+    if(c==='RCD') return 24;
+    return 12;
+  }}
 ];
 
-const TOTAL = S.length;
+const TOTAL = indexEtape('done') + 1; // inchangé : l'étape « Autre contrat » est rangée après « done »
 function gv(f) { return typeof f === 'function' ? f(D) : f; }
 
 /* ── DOM helpers ── */
@@ -472,7 +558,7 @@ function clearUI() {
 }
 
 function setProg(idx) {
-  document.getElementById('prog').style.width = Math.max(3, Math.min(97, Math.round(idx / TOTAL * 100))) + '%';
+  document.getElementById('prog').style.width = Math.max(3, Math.min(97, Math.round((S[idx] && S[idx].progIdx !== undefined ? S[idx].progIdx : idx) / TOTAL * 100))) + '%';
   const bb = document.getElementById('back-btn');
   history.length > 0 && idx > 0 && S[idx] && S[idx].type !== 'done' ? bb.classList.remove('hidden') : bb.classList.add('hidden');
 }
@@ -547,7 +633,7 @@ function applyImmatMask(inp) {
 
 /* ── Téléphone international ── */
 const COUNTRY_LIST = [
-  {code:'FR',dial:'+33',name:'France',max:9,trunk:'0'},
+  {code:'FR',dial:'+33',name:'France',max:9,trunk:'0',requiresTrunk:true,strict:/^0[1-9]\d{8}$/},
   {code:'BE',dial:'+32',name:'Belgique',max:9,trunk:'0'},
   {code:'CH',dial:'+41',name:'Suisse',max:9,trunk:'0'},
   {code:'LU',dial:'+352',name:'Luxembourg',max:9},
@@ -605,6 +691,9 @@ const SORTED_DIAL = [...COUNTRY_LIST].sort((a,b) => b.dial.length - a.dial.lengt
 function isoToFlag(code) { return String.fromCodePoint(...code.toUpperCase().split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65)); }
 COUNTRY_LIST.forEach(c => { c.flag = isoToFlag(c.code); });
 
+/* Saisie nationale AVEC trunk pour la France (0612345678) — stockage E.164 inchangé */
+function inputMax(c) { return c.max + (c.requiresTrunk && c.trunk ? c.trunk.length : 0); }
+function toNationalInput(d, c) { return (c.requiresTrunk && c.trunk && d && !d.startsWith(c.trunk)) ? c.trunk + d : d; }
 function parsePhoneE164(value) {
   if (!value) return { country: COUNTRY_LIST[0], nat: '' };
   const cleaned = value.replace(/[\s.\-()]/g, '');
@@ -630,6 +719,7 @@ function isValidIntlPhone(nat, country) {
   let d = nat.replace(/\D/g, '');
   if (country.trunk && d.startsWith(country.trunk)) d = d.slice(country.trunk.length);
   if (!d) return false;
+  if (country.strict) return country.strict.test(toNationalInput(d, country));
   return d.length >= Math.max(1, country.max - 3) && d.length <= country.max;
 }
 function filterCountriesList(q) {
@@ -691,6 +781,34 @@ function showOpts(opts, cb) {
   });
 }
 
+/* « Autre contrat » : liste déroulante du catalogue, groupée par famille, sans les types déjà proposés en boutons.
+   Construite élément par élément (textContent), jamais en innerHTML. */
+function showCatalogue(cb) {
+  const z = document.getElementById('opts-zone'); z.innerHTML = '';
+  const boutons = new Set(produitsProposes(D).map(l => BOUTON_VERS_CODE[l]).filter(Boolean));
+  const sel = document.createElement('select'); sel.className = 'cat-sel';
+  const vide = document.createElement('option'); vide.value = ''; vide.textContent = 'Choisir un contrat\u2026'; vide.disabled = true; vide.selected = true; sel.appendChild(vide);
+  FAMILLES_TYPES.forEach(([f, lib]) => {
+    const types = CATALOGUE_TYPES.filter(t => t.f === f && !boutons.has(t.c));
+    if (!types.length) return;
+    const g = document.createElement('optgroup'); g.label = lib;
+    types.forEach(t => { const o = document.createElement('option'); o.value = t.c; o.textContent = t.l + (t.ibip ? ' (IBIP)' : ''); g.appendChild(o); });
+    sel.appendChild(g);
+  });
+  const ga = document.createElement('optgroup'); ga.label = 'Autre';
+  const oa = document.createElement('option'); oa.value = '__autre_besoin'; oa.textContent = AUTRE_BESOIN; ga.appendChild(oa); sel.appendChild(ga);
+  const ok = document.createElement('button'); ok.className = 'opt sel'; ok.textContent = 'Valider'; ok.disabled = true;
+  sel.onchange = () => { ok.disabled = !sel.value; };
+  ok.onclick = () => {
+    if (!sel.value) return;
+    const t = CATALOGUE_TYPES.find(x => x.c === sel.value);
+    clearUI();
+    cb(t ? t.c : '', t ? t.l : AUTRE_BESOIN);
+  };
+  z.appendChild(sel); z.appendChild(ok);
+  scrollToUI();
+}
+
 function showInput(ph, cb, isTA=false, validate=null) {
   const z = document.getElementById('inp-zone'); z.classList.remove('hidden');
   const hint = document.createElement('div'); hint.className = 'inp-hint'; hint.innerHTML = '<i class="ti ti-corner-down-left"></i> Entr\u00e9e pour continuer';
@@ -698,6 +816,7 @@ function showInput(ph, cb, isTA=false, validate=null) {
   let inp;
   if (isTA) { inp = document.createElement('textarea'); inp.className = 'ci tall'; inp.rows = 3; inp.placeholder = ph; inp.onkeydown = e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sub();} }; }
   else { inp = document.createElement('input'); inp.className = 'ci'; inp.placeholder = ph; inp.onkeydown = e => { if(e.key==='Enter') sub(); }; }
+  if (validate === 'siret') inp.setAttribute('inputmode', 'numeric');
   const btn = document.createElement('button'); btn.className = 'sb'; btn.setAttribute('aria-label','Envoyer'); btn.innerHTML = '<i class="ti ti-arrow-right"></i>';
   const errEl = document.createElement('div'); errEl.style.cssText = 'font-size:11px;color:var(--red);margin-top:2px;display:none';
   const sub = () => {
@@ -705,6 +824,7 @@ function showInput(ph, cb, isTA=false, validate=null) {
     if (validate === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
       errEl.textContent = 'Adresse email invalide'; errEl.style.display = 'block'; return;
     }
+    if (validate === 'siret' && !/^\d{14}$/.test(v.replace(/\D/g, ''))) { errEl.textContent = 'SIRET invalide : 14 chiffres attendus'; errEl.style.display = 'block'; return; }
     if (validate === 'textarea') {
       const contentErr = validateTextContent(v);
       if (contentErr) { errEl.textContent = contentErr; errEl.style.display = 'block'; return; }
@@ -729,7 +849,7 @@ function showPhoneInput(cb) {
   function updateBtn() { countryBtn.innerHTML = '<span>' + selCountry.flag + '</span> <span>' + selCountry.dial + '</span> <span class="chevron">▼</span>'; }
   updateBtn();
 
-  const natInp = document.createElement('input'); natInp.className = 'phone-nat'; natInp.setAttribute('inputmode','tel'); natInp.placeholder = '6 12 34 56 78';
+  const natInp = document.createElement('input'); natInp.className = 'phone-nat'; natInp.setAttribute('inputmode','tel'); natInp.placeholder = selCountry.requiresTrunk ? '06 12 34 56 78' : '6 12 34 56 78';
 
   const dd = document.createElement('div'); dd.className = 'phone-dd';
   const ddSearch = document.createElement('input'); ddSearch.className = 'phone-dd-search'; ddSearch.placeholder = 'Rechercher un pays...';
@@ -747,7 +867,7 @@ function showPhoneInput(cb) {
       if (c.code === selCountry.code && c.dial === selCountry.dial) item.classList.add('sel');
       if (i === hlIdx) item.classList.add('hl');
       item.innerHTML = '<span class="dd-flag">' + c.flag + '</span><span class="dd-name">' + c.name + '</span><span class="dd-code">' + c.dial + '</span>';
-      item.onclick = () => { selCountry = c; updateBtn(); closeDd(); updateValidity(); natInp.focus(); };
+      item.onclick = () => { selCountry = c; updateBtn(); natInp.placeholder = selCountry.requiresTrunk ? '06 12 34 56 78' : '6 12 34 56 78'; natInp.value = toNationalInput(natInp.value.replace(/\D/g, ''), selCountry).slice(0, inputMax(selCountry)); closeDd(); updateValidity(); natInp.focus(); };
       ddList.appendChild(item);
     });
   }
@@ -780,12 +900,14 @@ function showPhoneInput(cb) {
     const d = natInp.value.replace(/\D/g, '');
     const valid = isValidIntlPhone(natInp.value, selCountry);
     phoneRow.classList.toggle('phone-valid', valid);
-    phoneRow.classList.toggle('phone-invalid', d.length >= selCountry.max && !valid);
+    phoneRow.classList.toggle('phone-invalid', d.length >= inputMax(selCountry) && !valid);
     subBtn.disabled = !valid;
   }
   natInp.addEventListener('input', () => {
-    let d = natInp.value.replace(/\D/g, '');
-    if (d.length > selCountry.max) { d = d.slice(0, selCountry.max); natInp.value = d; }
+    let d = toNationalInput(natInp.value.replace(/\D/g, ''), selCountry);
+    const max = inputMax(selCountry);
+    if (d.length > max) d = d.slice(0, max);
+    if (d !== natInp.value) natInp.value = d;
     updateValidity();
   });
 
@@ -1012,6 +1134,7 @@ async function sendToMake() {
   const payload = {
     profil: D.profil || null,
     produit: D.produit || null,
+    type_contrat: D.type_contrat || null,
     date_permis: D.date_permis || null,
     vehicule: D.vehicule || null,
     immatriculation: D.immatriculation || null,
@@ -1033,7 +1156,7 @@ async function sendToMake() {
     code_postal: D.code_postal || null,
     ville: D.ville || null,
     date_naissance: D.date_naissance || null,
-    siret: D.siret || null,
+    siret: D.siret ? D.siret.replace(/\D/g, '') : null,
     contact_pref: D.contact_pref || null,
     _deja_client: D._deja_client || null,
     _lookup_email: D._lookup_email || null,
@@ -1199,7 +1322,7 @@ async function runStep(idx, isBack=false) {
       el.innerHTML = buildRecap(); m.appendChild(el); m.scrollTop = m.scrollHeight;
       showOpts(['\u2705 Confirmer et envoyer','\u21a9 Recommencer'], choice => {
         if (choice.includes('Recommencer')) { Object.keys(D).forEach(k => delete D[k]); history.length = 0; isExistingClient = false; document.getElementById('msgs').innerHTML = ''; runStep(0); }
-        else { userMsg('Confirmer et envoyer').then(() => runStep(S.length - 1)); }
+        else { userMsg('Confirmer et envoyer').then(() => runStep(indexEtape('done'))); }
       });
     }, 900);
     return;
@@ -1220,6 +1343,7 @@ async function runStep(idx, isBack=false) {
       setAlexState('idle');
     }
     runStep(s.next(D)); }); }
+  else if (s.type === 'catalogue') { showCatalogue(async (code, label) => { history.push(idx); D.produit = Object.keys(BOUTON_VERS_CODE).find(b => BOUTON_VERS_CODE[b] === code) || label; D.type_contrat = code; await userMsg(label, idx); runStep(s.next(D)); }); }
   else if (s.type === 'input') { showInput(s.ph, async val => {
     history.push(idx);
     // Capitalize ou lowercase selon flags
