@@ -1164,15 +1164,23 @@ async function sendToMake() {
     submitted_at: new Date().toISOString()
   };
 
+  // Réussite = réponse n8n « status: ok » : le webhook ne répond qu'après la création du dossier (responseNode).
+  // Sinon false : l'étape finale affiche l'échec et propose « Réessayer » — plus de succès annoncé sur un envoi perdu
+  // (2026-09-30). Le contenu envoyé (données personnelles) n'est plus écrit dans la console.
   try {
-    await fetch(WEBHOOK_URL, {
+    const res = await fetch(WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    console.log('\u2705 Payload envoy\u00e9 \u00e0 n8n:', payload);
-  } catch(err) {
-    console.error('\u274c Webhook error:', err);
+    let data = null;
+    try { data = await res.json(); } catch (e) { data = null; }
+    if (res.ok && data && data.status === 'ok') return true;
+    console.error('Envoi refus\u00e9 par le serveur : HTTP ' + res.status);
+    return false;
+  } catch (err) {
+    console.error('Envoi impossible :', err && err.message);
+    return false;
   }
 }
 
@@ -1294,7 +1302,16 @@ async function runStep(idx, isBack=false) {
   }
 
   if (s.type === 'done') {
-    clearUI();
+    clearUI(); setAlexState('thinking');
+    document.getElementById('back-btn').classList.add('hidden');
+    // Succès affiché SEULEMENT après confirmation de n8n (dossier créé) ; échec visible, réponses conservées (2026-09-30).
+    await botMsg('Envoi de votre demande en cours\u2026', 300);
+    if (!(await sendToMake())) {
+      setAlexState('idle');
+      await botMsg("L\u2019envoi de votre demande n\u2019a pas abouti. Vos r\u00e9ponses sont conserv\u00e9es : r\u00e9essayez dans un instant. Si le probl\u00e8me persiste, contactez Easy Courtage Assurance.", 300);
+      showOpts(['\u21bb R\u00e9essayer'], () => runStep(idx));
+      return;
+    }
     setAlexState('success');
     // Dynamic thank you page
     const successEl = document.getElementById('success');
@@ -1307,7 +1324,6 @@ async function runStep(idx, isBack=false) {
     successEl.classList.remove('hidden');
     document.getElementById('back-btn').classList.add('hidden');
     document.getElementById('prog').style.width = '100%';
-    await sendToMake();
     return;
   }
 
