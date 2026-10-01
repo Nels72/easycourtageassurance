@@ -385,8 +385,20 @@ const AUTRE_BESOIN = 'Autre besoin (\u00e0 pr\u00e9ciser)';
 const BOUTON_VERS_CODE = {'Auto':'AUT','Moto':'MOT','Cycle':'CYCLO','Flotte Auto':'FLO_AUT','Habitation':'MRH','Mutuelle Sant\u00e9':'SNT','Local Professionnel':'MRP','RC Professionnelle':'RCPRO','RC D\u00e9cennale':'RCD','Sant\u00e9 & Pr\u00e9voyance Collective':'COLL','Cyber Risque':'CYBER','RC Entreprise':'RCE'};
 function produitsProposes(d) {
   return d.profil==='Particulier'?['Auto','Habitation','Moto','Mutuelle Sant\u00e9','Cyber Risque','Cycle']:
-         d.profil==='Professionnel'?['Local Professionnel','RC Professionnelle','Flotte Auto','Mutuelle Sant\u00e9','Sant\u00e9 & Pr\u00e9voyance Collective']:
-         ['RC D\u00e9cennale','Flotte Auto','Sant\u00e9 & Pr\u00e9voyance Collective','Cyber Risque','RC Entreprise'];
+         d.profil==='Professionnel'?['Auto','Local Professionnel','RC Professionnelle','Flotte Auto','Mutuelle Sant\u00e9','Sant\u00e9 & Pr\u00e9voyance Collective']:
+         ['Auto','RC D\u00e9cennale','Flotte Auto','Sant\u00e9 & Pr\u00e9voyance Collective','Cyber Risque','RC Entreprise'];
+}
+/* \u2500\u2500 Conducteur non d\u00e9sign\u00e9 / tous conducteurs (Pro ou Entreprise, AUT et FLO_AUT) \u2014 2026-10-01 \u2500\u2500 */
+const CONDUCTEUR_NON_DESIGNE = 'Non d\u00e9sign\u00e9 / Tous conducteurs';
+function codeVehiculeChoisi(d) {
+  return d.produit===AUTRE_CONTRAT ? d.type_contrat : BOUTON_VERS_CODE[d.produit];
+}
+function demandeConducteur(d) {
+  return (d.profil==='Professionnel'||d.profil==='Entreprise') && ['AUT','FLO_AUT'].includes(codeVehiculeChoisi(d));
+}
+function apresConducteur(d) {
+  if(codeVehiculeChoisi(d)==='FLO_AUT') return 10; // assur\u00e9 36 mois, comme avant
+  return d.conducteur_choix===CONDUCTEUR_NON_DESIGNE ? 8 : 7; // non d\u00e9sign\u00e9 : pas de date de permis
 }
 function indexEtape(id) { return S.findIndex(x => x.id === id); }
 
@@ -410,6 +422,7 @@ const S = [
     save:'produit', next:d=>{
       if(d.produit===AUTRE_CONTRAT) return indexEtape('autre_contrat');
       delete D.type_contrat;
+      if(demandeConducteur(d)) return indexEtape('conducteur');
       if(['Auto','Moto','Cycle'].includes(d.produit)) return 7; // permis
       if(d.produit==='Flotte Auto') return 10; // assuré 36 mois
       if(d.produit==='RC D\u00e9cennale') return 24; // RCD spécifique
@@ -487,11 +500,15 @@ const S = [
   // 28 - « Autre contrat » : liste du catalogue (hors boutons), puis la même suite que le type choisi
   {id:'autre_contrat', bot:"Quel contrat recherchez-vous ?", type:'catalogue', progIdx:6, next:d=>{
     const c = d.type_contrat;
+    if(demandeConducteur(d)) return indexEtape('conducteur');
     if(['AUT','MOT','CYCLO'].includes(c)) return 7;
     if(c==='FLO_AUT') return 10;
     if(c==='RCD') return 24;
     return 12;
-  }}
+  }},
+  // 29 - Conducteur non désigné (Pro ou Entreprise, Auto ou Flotte) : rangée en fin, les index précédents ne bougent pas
+  {id:'conducteur', bot:"Le véhicule est-il conduit par un conducteur attitré ?", type:'opts', progIdx:6,
+    opts:['Oui, un conducteur désigné', CONDUCTEUR_NON_DESIGNE], save:'conducteur_choix', next:d=>apresConducteur(d)}
 ];
 
 const TOTAL = indexEtape('done') + 1; // inchangé : l'étape « Autre contrat » est rangée après « done »
@@ -1091,7 +1108,7 @@ function showMultiUpload(accept, save, saveUrl, optional, cb) {
 function buildRecap() {
   const secs = [
     {lbl:'Votre projet', keys:[
-      {k:'profil',l:'Profil'},{k:'produit',l:'Assurance'},{k:'date_permis',l:'Permis'},
+      {k:'profil',l:'Profil'},{k:'produit',l:'Assurance'},{k:'conducteur_choix',l:'Conducteur'},{k:'date_permis',l:'Permis'},
       {k:'vehicule',l:'V\u00e9hicule'},{k:'immatriculation',l:'Immatriculation'},
       {k:'assure_36mois',l:'Assur\u00e9 36 mois'},{k:'rcd_deja_assure',l:'RC D\u00e9c. assur\u00e9'},
       {k:'bonus_malus',l:'Bonus/Malus'},
@@ -1135,6 +1152,8 @@ async function sendToMake() {
     profil: D.profil || null,
     produit: D.produit || null,
     type_contrat: D.type_contrat || null,
+    // Envoyé seulement s'il est choisi ET encore applicable (un retour vers Particulier ou Moto l'annule)
+    ...(demandeConducteur(D) && D.conducteur_choix===CONDUCTEUR_NON_DESIGNE ? {conducteur_non_designe: true} : {}),
     date_permis: D.date_permis || null,
     vehicule: D.vehicule || null,
     immatriculation: D.immatriculation || null,
