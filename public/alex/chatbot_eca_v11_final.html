@@ -435,16 +435,23 @@ const S = [
   // 9 - Immatriculation
   {id:'immat', bot:"Et son immatriculation ?", type:'immat', save:'immatriculation', next:()=>10},
   // 10 - Assuré 36 mois
-  {id:'assure', bot:"Avez-vous \u00e9t\u00e9 assur\u00e9(e) au cours des 36 derniers mois ? Cela impacte directement votre tarif.", type:'opts', opts:['Oui','Non'], save:'assure_36mois',
+  {id:'assure', bot:d=>demandeConducteur(d)
+      ? "Le v\u00e9hicule (ou votre entreprise) a-t-il \u00e9t\u00e9 assur\u00e9 au cours des 36 derniers mois ? Cela impacte directement le tarif."
+      : "Avez-vous \u00e9t\u00e9 assur\u00e9(e) au cours des 36 derniers mois ? Cela impacte directement votre tarif.", type:'opts', opts:['Oui','Non'], save:'assure_36mois',
     next:d=>{if(d.assure_36mois==='Non'){D.bonus_malus='Sans bonus ni malus';D._skip_contrat_auto=true;return 12;}return 11;}},
   // 11 - RI (Relevé d'Information)
-  {id:'ri', bot:"Votre Relev\u00e9 d\u2019Information permettra \u00e0 l\u2019expert de vous proposer une offre encore plus pr\u00e9cise. Vous pouvez le d\u00e9poser ici.", type:'upload', accept:'.pdf,.jpg,.jpeg,.png', save:'fichier_ri', save_url:'fichier_ri_url', optional:true, level:'red', skipText:'Passer (fortement d\u00e9conseill\u00e9)', next:()=>12},
+  {id:'ri', bot:d=>demandeConducteur(d)
+      ? "Le Relev\u00e9 d\u2019Information du v\u00e9hicule ou de la flotte permettra \u00e0 l\u2019expert de vous proposer une offre encore plus pr\u00e9cise. Vous pouvez le d\u00e9poser ici."
+      : "Votre Relev\u00e9 d\u2019Information permettra \u00e0 l\u2019expert de vous proposer une offre encore plus pr\u00e9cise. Vous pouvez le d\u00e9poser ici.", type:'upload', accept:'.pdf,.jpg,.jpeg,.png', save:'fichier_ri', save_url:'fichier_ri_url', optional:true, level:'red', skipText:'Passer (fortement d\u00e9conseill\u00e9)', next:()=>12},
   // 12 - Documents spécifiques (multi-upload)
   {id:'docs', bot:d=>{const ds=DOCS_SPECIFIQUES[d.produit];return ds?'Documents utiles pour votre dossier ('+ds+'). Vous pouvez d\u00e9poser plusieurs fichiers.':'Avez-vous des documents utiles \u00e0 joindre ? Vous pouvez en d\u00e9poser plusieurs.';}, type:'multi_upload', accept:'.pdf,.jpg,.jpeg,.png,.doc,.docx', save:'docs_utiles', save_url:'docs_utiles_url', optional:true, next:()=>13},
   // 13 - Contrat en cours/précédent (niveau adaptatif)
   {id:'contrat', bot:d=>{const c=CONTRAT_LEVELS[d.produit];return c?c.text:'Avez-vous un contrat en cours ou pr\u00e9c\u00e9dent \u00e0 joindre ?';}, type:'upload', accept:'.pdf,.jpg,.jpeg,.png', save:'contrat_precedent', save_url:'contrat_precedent_url', optional:true, level_fn:d=>{const c=CONTRAT_LEVELS[d.produit];return c?c.level:'neutral';}, skipText_fn:d=>{const c=CONTRAT_LEVELS[d.produit];return c?c.skip:'Passer cette \u00e9tape';}, next:()=>14},
   // 14 - Situation (adaptée par produit)
-  {id:'situation', bot:d=>{const m={
+  {id:'situation', bot:d=>{
+    // Conducteur non désigné : pas de « situation de conducteur » (retour du test réel du 2026-10-02)
+    if(demandeConducteur(d) && d.conducteur_choix===CONDUCTEUR_NON_DESIGNE) return 'Quelques mots sur l’usage du véhicule ou vos attentes ? Cela permettra à l’expert de personnaliser son retour.';
+    const m={
     'Auto':'Quelques mots sur votre situation de conducteur ou vos attentes ? Cela permettra \u00e0 l\u2019expert de personnaliser son retour.',
     'Moto':'Quelques mots sur votre exp\u00e9rience moto ou vos attentes ? Cela permettra \u00e0 l\u2019expert de personnaliser son retour.',
     'Cycle':'Quelques mots sur votre utilisation du v\u00e9lo ou vos attentes ? Cela permettra \u00e0 l\u2019expert de personnaliser son retour.',
@@ -457,7 +464,9 @@ const S = [
     'Mutuelle Sant\u00e9':'Quelques mots sur vos besoins en sant\u00e9 ou vos attentes ? Cela permettra \u00e0 l\u2019expert de personnaliser son retour.',
     'Sant\u00e9 & Pr\u00e9voyance Collective':'Quelques mots sur votre effectif ou vos besoins en couverture collective ? Cela permettra \u00e0 l\u2019expert de personnaliser son retour.',
     'Cyber Risque':'Quelques mots sur votre infrastructure IT ou vos pr\u00e9occupations cyber ? Cela permettra \u00e0 l\u2019expert de personnaliser son retour.'
-  };return m[d.produit]||'Quelques mots sur votre situation ou vos attentes particuli\u00e8res ? Cela permettra \u00e0 l\u2019expert de personnaliser son retour.';}, type:'textarea', ph_fn:d=>{const p={
+  };return m[d.produit]||'Quelques mots sur votre situation ou vos attentes particuli\u00e8res ? Cela permettra \u00e0 l\u2019expert de personnaliser son retour.';}, type:'textarea', ph_fn:d=>{
+    if(demandeConducteur(d) && d.conducteur_choix===CONDUCTEUR_NON_DESIGNE) return 'Ex : véhicule de société, plusieurs utilisateurs, usage professionnel...';
+    const p={
     'Auto':'Ex : Premi\u00e8re assurance, conducteur secondaire, tarif comp\u00e9titif...',
     'Moto':'Ex : Usage quotidien, roadster, hivernage, tarif...',
     'Cycle':'Ex : VAE, vol fr\u00e9quent, usage urbain...',
@@ -470,7 +479,7 @@ const S = [
     'Mutuelle Sant\u00e9':'Ex : Famille 4 personnes, optique importante, dentaire...',
     'Sant\u00e9 & Pr\u00e9voyance Collective':'Ex : 20 salari\u00e9s, convention Syntec, pr\u00e9voyance d\u00e9c\u00e8s...',
     'Cyber Risque':'Ex : E-commerce, donn\u00e9es clients, t\u00e9l\u00e9travail...'
-  };return p[d.produit]||'Ex : Premi\u00e8re assurance, tarif comp\u00e9titif...';}, save:'situation', next:d=>{if(isExistingClient){return D.date_naissance?25:22;}return 15;}},
+  };return p[d.produit]||'Ex : Premi\u00e8re assurance, tarif comp\u00e9titif...';}, save:'situation', next:d=>{if(isExistingClient){return 25;}return 15;} /* client déjà connu : ni date de naissance ni SIRET (décision du 2026-10-02) */},
   // 15 - Intro coordonnées (personnalisé avec prénom)
   {id:'intro_coord', bot:d=>'Presque termin\u00e9 '+d.prenom+' \ud83d\ude4c Il ne reste plus qu\u2019\u00e0 confirmer vos coordonn\u00e9es.', type:'opts', opts:['Continuer'], next:()=>16},
   // 16 - Confirmation prénom
