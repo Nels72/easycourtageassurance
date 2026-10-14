@@ -18,7 +18,7 @@
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);font-family:'Sora',sans-serif}
-    .cw{max-width:500px;margin:0 auto;padding:1.5rem 1rem 3rem}
+    .cw{max-width:500px;margin:0 auto;padding:1.5rem 1rem 50vh}
 
     /* ── Header ── */
     .ch{display:flex;align-items:center;gap:12px;padding:0 0 1.25rem;border-bottom:.5px solid var(--bd3);margin-bottom:1rem}
@@ -788,13 +788,14 @@ function showAddress(cb) {
           sugg.appendChild(item);
         });
         sugg.classList.remove('hidden');
+        sugg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } catch(e) { sugg.classList.add('hidden'); }
     }, 300);
   };
   document.addEventListener('click', function h(e) { if (!row.contains(e.target)) { sugg.classList.add('hidden'); document.removeEventListener('click', h); } });
   row.appendChild(inp); row.appendChild(btn); row.appendChild(sugg);
   z.appendChild(hint); z.appendChild(row);
-  setTimeout(() => inp.focus(), 80);
+  setTimeout(() => { inp.focus(); scrollToUI(); }, 80);
 }
 
 /* ── Input renderers ── */
@@ -859,7 +860,7 @@ function showInput(ph, cb, isTA=false, validate=null) {
   };
   btn.onclick = sub; row.appendChild(inp); row.appendChild(btn);
   z.appendChild(hint); z.appendChild(row); z.appendChild(errEl);
-  setTimeout(() => inp.focus(), 80);
+  setTimeout(() => { inp.focus(); scrollToUI(); }, 80);
 }
 
 function showPhoneInput(cb) {
@@ -946,7 +947,7 @@ function showPhoneInput(cb) {
   const submitRow = document.createElement('div'); submitRow.className = 'inp-row'; submitRow.style.justifyContent = 'flex-end'; submitRow.appendChild(subBtn);
   const phoneHint = document.createElement('div'); phoneHint.className = 'phone-hint'; phoneHint.textContent = 'France +33 par defaut — cliquez pour changer';
   z.appendChild(hint); z.appendChild(wrapper); z.appendChild(submitRow); z.appendChild(phoneHint);
-  setTimeout(() => { natInp.focus(); }, 80);
+  setTimeout(() => { natInp.focus(); scrollToUI(); }, 80);
 }
 
 function showDateInput(cb, dateType) {
@@ -964,7 +965,7 @@ function showDateInput(cb, dateType) {
   };
   btn.onclick = sub; inp.onkeydown = e => { if(e.key==='Enter') sub(); };
   row.appendChild(inp); row.appendChild(btn); z.appendChild(hint); z.appendChild(row); z.appendChild(errEl);
-  setTimeout(() => inp.focus(), 80);
+  setTimeout(() => { inp.focus(); scrollToUI(); }, 80);
 }
 
 function showImmat(cb) {
@@ -976,7 +977,7 @@ function showImmat(cb) {
   const sub = () => { const v = inp.value.trim(); if (!/^[A-Z]{2}-\d{3}-[A-Z]{2}$/.test(v)) return; clearUI(); cb(v); };
   btn.onclick = sub; inp.onkeydown = e => { if(e.key==='Enter') sub(); };
   row.appendChild(inp); row.appendChild(btn); z.appendChild(hint); z.appendChild(row);
-  setTimeout(() => inp.focus(), 80);
+  setTimeout(() => { inp.focus(); scrollToUI(); }, 80);
 }
 
 /* ── Upload simple (RI, contrat) ── */
@@ -1334,6 +1335,7 @@ async function runStep(idx, isBack=false) {
     document.getElementById('back-btn').classList.add('hidden');
     // Succès affiché SEULEMENT après confirmation de n8n (dossier créé) ; échec visible, réponses conservées (2026-09-30).
     await botMsg('Envoi de votre demande en cours\u2026', 300);
+    scrollToUI();
     if (!(await sendToMake())) {
       setAlexState('idle');
       await botMsg("L\u2019envoi de votre demande n\u2019a pas abouti. Vos r\u00e9ponses sont conserv\u00e9es : r\u00e9essayez dans un instant. Si le probl\u00e8me persiste, contactez Easy Courtage Assurance.", 300);
@@ -1350,6 +1352,7 @@ async function runStep(idx, isBack=false) {
       + (D.email ? '<p style="font-size:13px;color:var(--tx2);margin-top:6px">Une confirmation a \u00e9t\u00e9 envoy\u00e9e \u00e0 <strong>' + D.email + '</strong>.</p>' : '')
       + '<p style="font-size:14px;font-weight:500;color:var(--ci);margin-top:14px">\u00c0 tr\u00e8s vite !</p>';
     successEl.classList.remove('hidden');
+    setTimeout(() => successEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
     document.getElementById('back-btn').classList.add('hidden');
     document.getElementById('prog').style.width = '100%';
     return;
