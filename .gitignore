@@ -6,3 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Local Netlify folder
+.netlify
+
+# Donnees clients locales (ne jamais publier : depot public)
+Portefeuille_ECA/
