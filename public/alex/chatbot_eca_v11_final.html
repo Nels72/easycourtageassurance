@@ -523,6 +523,10 @@ const S = [
 const TOTAL = indexEtape('done') + 1; // inchangé : l'étape « Autre contrat » est rangée après « done »
 function gv(f) { return typeof f === 'function' ? f(D) : f; }
 
+/* Échappement (2026-10-16) : toute donnée insérée par innerHTML passe par esc(). Les noms renvoyés par la recherche
+   de contact viennent d'Airtable, où n'importe qui a pu les écrire par le chatbot public. */
+function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
 /* ── DOM helpers ── */
 async function botMsg(txt, delay=0) {
   return new Promise(res => { setTimeout(() => {
@@ -532,7 +536,7 @@ async function botMsg(txt, delay=0) {
     const avDiv = document.createElement('div'); avDiv.className = 'av-bubble';
     const avInner = document.createElement('div'); avInner.className = 'av-bubble-lottie';
     avDiv.appendChild(avInner); createBubbleLottie(avInner); el.appendChild(avDiv);
-    const bub = document.createElement('div'); bub.className = 'bub'; bub.innerHTML = txt;
+    const bub = document.createElement('div'); bub.className = 'bub'; bub.innerHTML = esc(txt).replace(/&lt;(\/?)strong&gt;/g,'<$1strong>');
     el.appendChild(bub); m.appendChild(el); m.scrollTop = m.scrollHeight; res();
   }, delay); });
 }
@@ -555,7 +559,7 @@ async function userMsg(txt, stepIdx) {
   const m = document.getElementById('msgs'), el = document.createElement('div');
   el.className = 'msg user';
   if (stepIdx !== undefined) el.setAttribute('data-step-idx', stepIdx);
-  el.innerHTML = '<div class="bub">' + txt + '</div>';
+  el.innerHTML = '<div class="bub">' + esc(txt) + '</div>';
   if (stepIdx !== undefined) {
     const ib = document.createElement('button');
     ib.className = 'inline-back-btn';
@@ -781,7 +785,7 @@ function showAddress(cb) {
         feats.forEach(f => {
           const p = f.properties, label = p.label||'', cp = p.postcode||'', city = p.city||'', street = p.name||'';
           const item = document.createElement('div'); item.className = 'addr-item'; item.setAttribute('role','option'); item.setAttribute('tabindex','0');
-          item.innerHTML = '<div class="addr-main">'+street+'</div><div class="addr-sub">'+cp+' '+city+'</div>';
+          item.innerHTML = '<div class="addr-main">'+esc(street)+'</div><div class="addr-sub">'+esc(cp)+' '+esc(city)+'</div>';
           const select = () => { inp.value = label; sugg.classList.add('hidden'); clearUI(); cb(label, cp, city); };
           item.onclick = select;
           item.onkeydown = e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();select();} if(e.key==='ArrowDown'){e.preventDefault();const nx=item.nextElementSibling;if(nx)nx.focus();} if(e.key==='ArrowUp'){e.preventDefault();const pv=item.previousElementSibling;if(pv)pv.focus();else inp.focus();} if(e.key==='Escape'){sugg.classList.add('hidden');inp.focus();} };
@@ -1085,11 +1089,11 @@ function showMultiUpload(accept, save, saveUrl, optional, cb) {
         const url = await uploadFile(file, (pct) => { progBar.style.width = pct + '%'; });
         uploadedFiles.push({name: file.name, url});
         const item = document.createElement('div'); item.className = 'multi-file-item';
-        item.innerHTML = '<i class="ti ti-check"></i> ' + file.name;
+        item.innerHTML = '<i class="ti ti-check"></i> ' + esc(file.name);
         mfZone.appendChild(item);
       } catch(err) {
         const item = document.createElement('div'); item.className = 'multi-file-item';
-        item.innerHTML = '<span style="color:var(--red)">\u26a0 ' + file.name + ' (erreur)</span>';
+        item.innerHTML = '<span style="color:var(--red)">\u26a0 ' + esc(file.name) + ' (erreur)</span>';
         mfZone.appendChild(item);
         console.error('Upload error:', err);
       }
@@ -1139,8 +1143,8 @@ function buildRecap() {
     if (!rows.length) return;
     html += '<div class="rc-sec-lbl">'+sec.lbl+'</div>';
     rows.forEach(({k,l,block}) => {
-      if (block) html += '<div class="rr rr-block"><span class="rl">'+l+'</span><span class="rv-block">"'+D[k]+'"</span></div>';
-      else html += '<div class="rr"><span class="rl">'+l+'</span><span class="rv">'+D[k]+'</span></div>';
+      if (block) html += '<div class="rr rr-block"><span class="rl">'+l+'</span><span class="rv-block">"'+esc(D[k])+'"</span></div>';
+      else html += '<div class="rr"><span class="rl">'+l+'</span><span class="rv">'+esc(D[k])+'</span></div>';
     });
   });
   html += '<div class="rc-rgpd">'
@@ -1347,9 +1351,9 @@ async function runStep(idx, isBack=false) {
     const successEl = document.getElementById('success');
     successEl.innerHTML = '<div class="sico"><i class="ti ti-circle-check"></i></div>'
       + '<p style="font-size:16px;font-weight:600;color:var(--tx);margin-bottom:10px">Demande re\u00e7ue ! \u2713</p>'
-      + '<p style="font-size:13.5px;color:var(--tx);margin-bottom:8px">Merci ' + (D.prenom || '') + ' de nous avoir sollicit\u00e9 !</p>'
+      + '<p style="font-size:13.5px;color:var(--tx);margin-bottom:8px">Merci ' + esc(D.prenom || '') + ' de nous avoir sollicit\u00e9 !</p>'
       + '<p style="font-size:13px;color:var(--tx2);line-height:1.7">Un expert Easy Courtage Assurance analyse votre dossier et vous recontacte tr\u00e8s rapidement avec une premi\u00e8re \u00e9tude personnalis\u00e9e.</p>'
-      + (D.email ? '<p style="font-size:13px;color:var(--tx2);margin-top:6px">Une confirmation a \u00e9t\u00e9 envoy\u00e9e \u00e0 <strong>' + D.email + '</strong>.</p>' : '')
+      + (D.email ? '<p style="font-size:13px;color:var(--tx2);margin-top:6px">Une confirmation a \u00e9t\u00e9 envoy\u00e9e \u00e0 <strong>' + esc(D.email) + '</strong>.</p>' : '')
       + '<p style="font-size:14px;font-weight:500;color:var(--ci);margin-top:14px">\u00c0 tr\u00e8s vite !</p>';
     successEl.classList.remove('hidden');
     setTimeout(() => successEl.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
