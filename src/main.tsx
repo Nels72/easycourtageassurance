@@ -1,10 +1,19 @@
 import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
+import {createRoot, hydrateRoot} from 'react-dom/client';
 import App from './App.tsx';
+import {normalizePath} from './pages';
 import './index.css';
 
-createRoot(document.getElementById('root')!).render(
+const container = document.getElementById('root')!;
+const app = (
   <StrictMode>
-    <App />
-  </StrictMode>,
+    <App path={normalizePath(window.location.pathname)} />
+  </StrictMode>
 );
+
+// Les pages de production sont prérendues ; en développement, #root est vide.
+if (container.hasChildNodes()) {
+  hydrateRoot(container, app);
+} else {
+  createRoot(container).render(app);
+}

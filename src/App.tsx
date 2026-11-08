@@ -30,6 +30,7 @@ import {
 // Espace client du cabinet sur Alxor OS (connexion par lien envoyé par e-mail).
 const ESPACE_CLIENT_URL = 'https://alxor-os.netlify.app/espace-client/EAS-Y8LtQ';
 import { motion } from 'motion/react';
+import { PAGES, SERVICES } from './pages';
 
 function loadGoogleAnalytics() {
   const win = window as any;
@@ -116,7 +117,7 @@ const CookieBanner = () => {
 
         {/* BLOC 3 : BOUTONS */}
         <div className="border-t border-[#f0f0f0] pt-3 flex flex-col sm:flex-row items-center gap-3 sm:justify-end">
-          <a href="#" onClick={(e) => { e.preventDefault(); document.getElementById('link-confidentialite')?.click(); }} className="text-[0.78rem] text-[#9ca3af] underline sm:mr-auto">
+          <a href="/politique-confidentialite" className="text-[0.78rem] text-[#9ca3af] underline sm:mr-auto">
             En savoir plus
           </a>
           <button onClick={handleRefuse} className="w-full sm:w-auto bg-transparent text-[#5a6478] border border-[#e2e8f0] rounded-lg px-6 py-2.5 font-medium text-[0.88rem] cursor-pointer transition-all hover:bg-[#f4f7fc] hover:text-[#003f7f]">
@@ -135,7 +136,7 @@ const Navbar = () => (
   <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center h-20">
-        <div className="flex items-center gap-3">
+        <a href="/" className="flex items-center gap-3">
           <img
             src={`${import.meta.env.BASE_URL}logo-puzzle.png`}
             alt="Easy Courtage Assurance"
@@ -152,11 +153,11 @@ const Navbar = () => (
             <span className="text-gray-400 italic text-2xl font-light leading-none">Easy</span>
             <span className="text-primary text-lg font-extrabold">Courtage Assurance</span>
           </span>
-        </div>
+        </a>
         <div className="hidden md:flex items-center space-x-8">
-          <a href="#services" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Nos Assurances</a>
-          <a href="#pourquoi" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Pourquoi Nous</a>
-          <a href="#agences" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Notre Agence</a>
+          <a href="/#services" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Nos Assurances</a>
+          <a href="/#pourquoi" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Pourquoi Nous</a>
+          <a href="/#agences" className="text-sm font-semibold text-navy hover:text-primary transition-colors">Notre Agence</a>
         </div>
         <a
           href={ESPACE_CLIENT_URL}
@@ -175,7 +176,7 @@ const Hero = ({ onOpenAlex }: { onOpenAlex: () => void }) => (
     <div className="absolute inset-0 opacity-10">
       <img 
         src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=2000" 
-        alt="Background" 
+        alt=""
         className="w-full h-full object-cover"
         referrerPolicy="no-referrer"
       />
@@ -320,10 +321,7 @@ const CyberCampaign = ({ onOpenDetails, onOpenAlex }: { onOpenDetails: () => voi
   </section>
 );
 
-const CyberSliderModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const slides = [
+const cyberSlides = [
     {
       icon: ShieldAlert,
       title: "L'État de la menace",
@@ -348,7 +346,11 @@ const CyberSliderModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       text: 'En cas de crise, AXA vous accompagne 24h/24 et 7j/7 avec des experts en communication et une plateforme téléphonique dédiée. Vous profitez aussi d’une assistance juridique pour vos décisions et d’un soutien psychologique pour vos équipes.',
       highlight: 'Le + : Accompagnement complet incluant expertise et assistance informatique.',
     },
-  ];
+];
+
+const CyberSliderModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = cyberSlides;
 
   useEffect(() => {
     const onEsc = (e: KeyboardEvent) => {
@@ -458,7 +460,7 @@ const CyberSliderModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
   );
 };
 
-const ServiceCard = ({ icon: Icon, title, description, image }: any) => (
+const ServiceCard = ({ icon: Icon, title, description, image, href }: any) => (
   <motion.div 
     whileHover={{ y: -8 }}
     className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group"
@@ -480,8 +482,8 @@ const ServiceCard = ({ icon: Icon, title, description, image }: any) => (
       <p className="text-gray-600 text-sm leading-relaxed mb-6">
         {description}
       </p>
-      <a href="#contact" className="inline-flex items-center text-primary font-bold text-sm hover:gap-2 transition-all">
-        En savoir plus <ChevronRight className="w-4 h-4 ml-1" />
+      <a href={href} className="inline-flex items-center text-primary font-bold text-sm hover:gap-2 transition-all">
+        En savoir plus<span className="sr-only"> : {title}</span> <ChevronRight className="w-4 h-4 ml-1" />
       </a>
     </div>
   </motion.div>
@@ -501,24 +503,28 @@ const Services = ({ onOpenBorrower }: { onOpenBorrower: () => void }) => {
           <ServiceCard 
             icon={Car}
             title="Assurance Auto"
+            href="/assurance-auto"
             description="Responsabilité civile, tous risques ou tiers étendu. Solutions même pour malussés ou résiliés."
             image="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=800"
           />
           <ServiceCard 
             icon={Home}
             title="Habitation"
+            href="/assurance-habitation"
             description="Protégez votre foyer et vos biens avec des garanties sur-mesure pour propriétaires et locataires."
             image="https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=800"
           />
           <ServiceCard 
             icon={HeartPulse}
             title="Santé & Prévoyance"
+            href="/assurance-sante-prevoyance"
             description="Une mutuelle qui s'adapte à vos besoins réels et protège votre famille en toute circonstance."
             image="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800"
           />
           <ServiceCard 
             icon={Briefcase}
             title="Professionnels"
+            href="/assurance-professionnels"
             description="RC Pro, multirisque, décennale. Sécurisez votre activité avec l'expertise d'un courtier dédié."
             image="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800"
           />
@@ -713,7 +719,7 @@ const AgenciesAndContact = ({ onOpenMaps, onOpenAlex }: { onOpenMaps: () => void
   </section>
 );
 
-const Footer = ({ onOpenLegal, onOpenAbout, onOpenPrivacy }: { onOpenLegal: () => void; onOpenAbout: () => void; onOpenPrivacy: () => void }) => (
+const Footer = () => (
   <footer className="bg-white border-t border-gray-100 pt-20 pb-10">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="grid md:grid-cols-4 gap-12 mb-16">
@@ -738,19 +744,21 @@ const Footer = ({ onOpenLegal, onOpenAbout, onOpenPrivacy }: { onOpenLegal: () =
         <div>
           <h4 className="font-bold text-navy mb-6">Assurances</h4>
           <ul className="space-y-4 text-sm text-gray-500">
-            <li><a href="#" className="hover:text-primary transition-colors">Auto & Moto</a></li>
-            <li><a href="#" className="hover:text-primary transition-colors">Habitation</a></li>
-            <li><a href="#" className="hover:text-primary transition-colors">Santé & Prévoyance</a></li>
-            <li><a href="#" className="hover:text-primary transition-colors">Professionnels</a></li>
+            <li><a href="/assurance-auto" className="hover:text-primary transition-colors">Auto & Moto</a></li>
+            <li><a href="/assurance-habitation" className="hover:text-primary transition-colors">Habitation</a></li>
+            <li><a href="/assurance-sante-prevoyance" className="hover:text-primary transition-colors">Santé & Prévoyance</a></li>
+            <li><a href="/assurance-professionnels" className="hover:text-primary transition-colors">Professionnels</a></li>
+            <li><a href="/assurance-emprunteur" className="hover:text-primary transition-colors">Emprunteur</a></li>
+            <li><a href="/assurance-cyber" className="hover:text-primary transition-colors">Cyber</a></li>
           </ul>
         </div>
         <div>
           <h4 className="font-bold text-navy mb-6">Informations</h4>
           <ul className="space-y-4 text-sm text-gray-500">
-            <li><button id="link-apropos" onClick={onOpenAbout} className="hover:text-primary transition-colors cursor-pointer">À propos</button></li>
-            <li><button onClick={onOpenLegal} className="hover:text-primary transition-colors cursor-pointer">Mentions légales</button></li>
-            <li><button id="link-confidentialite" onClick={onOpenPrivacy} className="hover:text-primary transition-colors cursor-pointer">Politique de confidentialité</button></li>
-            <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
+            <li><a href="/a-propos" className="hover:text-primary transition-colors">À propos</a></li>
+            <li><a href="/mentions-legales" className="hover:text-primary transition-colors">Mentions légales</a></li>
+            <li><a href="/politique-confidentialite" className="hover:text-primary transition-colors">Politique de confidentialité</a></li>
+            <li><a href="/#contact" className="hover:text-primary transition-colors">Contact</a></li>
           </ul>
         </div>
       </div>
@@ -762,48 +770,22 @@ const Footer = ({ onOpenLegal, onOpenAbout, onOpenPrivacy }: { onOpenLegal: () =
   </footer>
 );
 
-const AboutModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-[6px]"
-        onClick={onClose}
-      />
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        id="modal-apropos"
-        className="relative w-full max-w-[780px] max-h-[78%] bg-white rounded-[12px] shadow-[0_24px_80px_rgba(0,0,0,.25)] flex flex-col overflow-hidden"
+const AboutPage = () => (
+    <section className="bg-soft py-12 px-4">
+      <div
+        className="mx-auto w-full max-w-[780px] bg-white rounded-[12px] shadow-sm overflow-hidden"
       >
         {/* Top Gradient Bar */}
         <div className="h-[6px] w-full bg-gradient-to-r from-[#003f7f] to-[#0059b3]" />
-        
+
         {/* Header */}
-        <div className="px-12 pt-12 pb-6 flex justify-between items-start">
-          <div>
-            <h2 className="text-[1.6rem] font-bold text-[#003f7f] mb-1">À propos</h2>
-            <p className="text-[0.85rem] text-[#5a6478]">Easy Courtage Assurance — Alfortville, depuis 2010</p>
-          </div>
-          <button 
-            onClick={onClose}
-            className="w-9 h-9 border border-[#e2e8f0] rounded-full flex items-center justify-center text-[#5a6478] hover:bg-[#f4f7fc] transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+        <div className="px-6 md:px-12 pt-12 pb-6">
+          <h1 className="text-[1.6rem] font-bold text-[#003f7f] mb-1">À propos</h1>
+          <p className="text-[0.85rem] text-[#5a6478]">Easy Courtage Assurance — Alfortville, depuis 2010</p>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-12 pb-12 text-[#1a1a2e]">
+        <div className="px-6 md:px-12 pb-12 text-[#1a1a2e]">
           {/* Stats Block */}
           <div className="grid grid-cols-3 bg-[#f4f7fc] rounded-lg p-6 mb-8 border border-[#e2e8f0]">
             <div className="text-center border-r border-[#e2e8f0]">
@@ -844,63 +826,26 @@ const AboutModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
             </p>
           </div>
         </div>
+      </div>
+    </section>
+);
 
-        {/* Footer Bar */}
-        <div className="bg-[#f4f7fc] border-t border-[#e2e8f0] px-12 py-4 flex justify-end">
-          <button 
-            onClick={onClose}
-            className="bg-[#003f7f] hover:bg-[#0059b3] text-white px-6 py-2.5 rounded-lg font-semibold transition-colors"
-          >
-            Fermer
-          </button>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
-
-const PrivacyModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-[6px]"
-        onClick={onClose}
-      />
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        id="modal-confidentialite"
-        className="relative w-full max-w-[780px] max-h-[78%] bg-white rounded-[12px] shadow-[0_24px_80px_rgba(0,0,0,.25)] flex flex-col overflow-hidden"
+const PrivacyPage = () => (
+    <section className="bg-soft py-12 px-4">
+      <div
+        className="mx-auto w-full max-w-[780px] bg-white rounded-[12px] shadow-sm overflow-hidden"
       >
         {/* Top Gradient Bar */}
         <div className="h-[6px] w-full bg-gradient-to-r from-[#003f7f] to-[#0059b3]" />
-        
+
         {/* Header */}
-        <div className="px-12 pt-12 pb-6 flex justify-between items-start">
-          <div>
-            <h2 className="text-[1.6rem] font-bold text-[#003f7f] mb-1">Politique de confidentialité</h2>
-            <p className="text-[0.85rem] text-[#5a6478]">Easy Courtage Assurance — Données personnelles & RGPD</p>
-          </div>
-          <button 
-            onClick={onClose}
-            className="w-9 h-9 border border-[#e2e8f0] rounded-full flex items-center justify-center text-[#5a6478] hover:bg-[#f4f7fc] transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+        <div className="px-6 md:px-12 pt-12 pb-6">
+          <h1 className="text-[1.6rem] font-bold text-[#003f7f] mb-1">Politique de confidentialité</h1>
+          <p className="text-[0.85rem] text-[#5a6478]">Easy Courtage Assurance — Données personnelles & RGPD</p>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-12 pb-12 text-[#1a1a2e]">
+        <div className="px-6 md:px-12 pb-12 text-[#1a1a2e]">
           {/* Stats Block */}
           <div className="grid grid-cols-3 bg-[#f4f7fc] rounded-lg p-6 mb-8 border border-[#e2e8f0]">
             <div className="text-center border-r border-[#e2e8f0]">
@@ -1012,47 +957,14 @@ const PrivacyModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
             </p>
           </div>
         </div>
+      </div>
+    </section>
+);
 
-        {/* Footer Bar */}
-        <div className="bg-[#f4f7fc] border-t border-[#e2e8f0] px-12 py-4 flex justify-end">
-          <button 
-            onClick={onClose}
-            className="bg-[#003f7f] hover:bg-[#0059b3] text-white px-6 py-2.5 rounded-lg font-semibold transition-colors"
-          >
-            Fermer
-          </button>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
-
-const LegalModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-md"
-        onClick={onClose}
-      />
-      <div className="relative w-[80%] h-[75%] bg-[#0a0b0f] border border-[rgba(201,168,76,.25)] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-        <button 
-          onClick={onClose}
-          className="absolute top-4 right-4 text-[rgba(201,168,76,.6)] hover:text-[rgba(201,168,76,1)] transition-colors z-10"
-        >
-          <X className="w-8 h-8" />
-        </button>
-        
-        <div className="flex-1 overflow-y-auto p-8 md:p-12 font-dmsans text-gray-300">
+const LegalPage = () => (
+    <section className="bg-soft py-12 px-4">
+      <div className="mx-auto max-w-5xl bg-[#0a0b0f] border border-[rgba(201,168,76,.25)] rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-8 md:p-12 font-dmsans text-gray-300">
           <div className="max-w-4xl mx-auto">
             <h1 className="font-DM Sans text-4xl text-[rgba(201,168,76,1)] mb-12 text-center">Mentions Légales</h1>
             
@@ -1210,11 +1122,10 @@ const LegalModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    </section>
+);
 
-const MapsModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+const MapsModal =({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -1425,10 +1336,116 @@ const AlexModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
   );
 };
 
-export default function App() {
-  const [isLegalOpen, setIsLegalOpen] = useState(false);
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+const ServicePage = ({ path, onOpenAlex, onOpenBorrower, onOpenMaps }: { path: string; onOpenAlex: () => void; onOpenBorrower: () => void; onOpenMaps: () => void }) => {
+  const service = SERVICES[path];
+  const label = PAGES.find((p) => p.path === path)?.label;
+  const others = PAGES.filter((p) => SERVICES[p.path] && p.path !== path);
+
+  return (
+    <>
+      <section className="bg-primary py-16 lg:py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
+          <nav aria-label="Fil d'Ariane" className="text-sm text-white/70 mb-6">
+            <a href="/" className="hover:text-white">Accueil</a> <span aria-hidden="true">›</span> <span>{label}</span>
+          </nav>
+          <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-white/80 mb-4">{service.eyebrow}</p>
+          <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-6">{service.h1}</h1>
+          <p className="text-lg text-white/80 leading-relaxed mb-8">{service.intro}</p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            {path === '/assurance-emprunteur' ? (
+              <button type="button" onClick={onOpenBorrower} className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white px-8 py-4 rounded-xl font-bold transition-all">
+                Simuler mes économies
+              </button>
+            ) : (
+              <button type="button" onClick={onOpenAlex} className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white px-8 py-4 rounded-xl font-bold transition-all">
+                <MessageCircle className="w-5 h-5" /> Obtenir un devis
+              </button>
+            )}
+            <a href="tel:0143781431" className="text-center bg-white/10 hover:bg-white/20 text-white border border-white/30 px-8 py-4 rounded-xl font-bold transition-all">
+              01 43 78 14 31
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+          <div>
+            <h2 className="text-2xl font-extrabold text-navy mb-6">Ce que nous vous proposons</h2>
+            <ul className="space-y-4">
+              {service.points.map((point) => (
+                <li key={point} className="flex items-start gap-3 text-gray-600">
+                  <CheckCircle2 className="text-accent w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {path === '/assurance-cyber' && (
+            <div className="space-y-8">
+              {cyberSlides.map((slide) => (
+                <div key={slide.title}>
+                  <h2 className="text-2xl font-extrabold text-navy mb-3">{slide.title}</h2>
+                  <p className="text-gray-600 leading-relaxed">{slide.text}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div>
+            <h2 className="text-2xl font-extrabold text-navy mb-6">Pourquoi passer par un courtier indépendant ?</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { title: 'Comparaison objective', desc: 'Nous ne sommes liés à aucune compagnie. Notre priorité, c\'est votre intérêt.' },
+                { title: 'Garanties optimales', desc: 'Nous analysons les petites lignes pour vous éviter les mauvaises surprises.' },
+                { title: 'Accompagnement local', desc: 'Une agence physique pour vous recevoir et vous conseiller de vive voix.' },
+              ].map((item) => (
+                <div key={item.title} className="bg-soft rounded-2xl p-6">
+                  <h3 className="font-bold text-navy mb-2">{item.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-navy text-white rounded-2xl p-8">
+            <h2 className="text-2xl font-extrabold mb-4">Votre agence à Alfortville</h2>
+            <div className="space-y-3 text-white/75">
+              <button type="button" onClick={onOpenMaps} className="block text-left underline decoration-dotted hover:text-white">47 rue Victor Hugo, 94140 Alfortville</button>
+              <a href="tel:0143781431" className="block hover:text-white">01 43 78 14 31</a>
+              <a href="mailto:easy@easycourtage.fr" className="block hover:text-white">easy@easycourtage.fr</a>
+              <p>Lun - Ven : 9h30 - 12h30 · 14h00 - 19h00<br />Sam : 9h30 - 13h00</p>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-extrabold text-navy mb-6">Nos autres assurances</h2>
+            <ul className="grid sm:grid-cols-2 gap-3">
+              {others.map((p) => (
+                <li key={p.path}>
+                  <a href={p.path} className="inline-flex items-center text-primary font-bold text-sm">
+                    {p.label} <ChevronRight className="w-4 h-4 ml-1" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+};
+
+const NotFoundPage = () => (
+  <section className="bg-soft py-32 px-4 text-center">
+    <h1 className="text-3xl font-extrabold text-navy mb-4">Page introuvable</h1>
+    <p className="text-gray-600 mb-8">Cette page n'existe pas ou a été déplacée.</p>
+    <a href="/" className="inline-block bg-primary hover:bg-primary-light text-white py-3 px-6 rounded-xl font-bold transition-all">Retour à l'accueil</a>
+  </section>
+);
+
+export default function App({ path }: { path: string }) {
   const [isMapsOpen, setIsMapsOpen] = useState(false);
   const [isCyberModalOpen, setIsCyberModalOpen] = useState(false);
   const [isAlexOpen, setIsAlexOpen] = useState(false);
@@ -1452,21 +1469,28 @@ export default function App() {
     <div className="min-h-screen bg-white font-sans text-navy selection:bg-accent selection:text-white">
       <Navbar />
       <main>
-        <Hero onOpenAlex={openAlex} />
-        <Stats />
-        <Services onOpenBorrower={openBorrower} />
-        <CyberCampaign onOpenDetails={() => setIsCyberModalOpen(true)} onOpenAlex={openAlex} />
-        <WhyUs />
-        <AgenciesAndContact onOpenMaps={() => setIsMapsOpen(true)} onOpenAlex={openAlex} />
+        {path === '/' ? (
+          <>
+            <Hero onOpenAlex={openAlex} />
+            <Stats />
+            <Services onOpenBorrower={openBorrower} />
+            <CyberCampaign onOpenDetails={() => setIsCyberModalOpen(true)} onOpenAlex={openAlex} />
+            <WhyUs />
+            <AgenciesAndContact onOpenMaps={() => setIsMapsOpen(true)} onOpenAlex={openAlex} />
+          </>
+        ) : SERVICES[path] ? (
+          <ServicePage path={path} onOpenAlex={openAlex} onOpenBorrower={openBorrower} onOpenMaps={() => setIsMapsOpen(true)} />
+        ) : path === '/a-propos' ? (
+          <AboutPage />
+        ) : path === '/mentions-legales' ? (
+          <LegalPage />
+        ) : path === '/politique-confidentialite' ? (
+          <PrivacyPage />
+        ) : (
+          <NotFoundPage />
+        )}
       </main>
-      <Footer 
-        onOpenLegal={() => setIsLegalOpen(true)} 
-        onOpenAbout={() => setIsAboutOpen(true)} 
-        onOpenPrivacy={() => setIsPrivacyOpen(true)}
-      />
-      <LegalModal isOpen={isLegalOpen} onClose={() => setIsLegalOpen(false)} />
-      <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
-      <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
+      <Footer />
       <MapsModal isOpen={isMapsOpen} onClose={() => setIsMapsOpen(false)} />
       <CyberSliderModal isOpen={isCyberModalOpen} onClose={() => setIsCyberModalOpen(false)} />
       <AlexModal isOpen={isAlexOpen} onClose={() => setIsAlexOpen(false)} />
